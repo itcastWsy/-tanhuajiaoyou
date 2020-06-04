@@ -3,6 +3,8 @@ import { View, Text, Image, StatusBar } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
+import request from "../../../utils/request";
+import {ACCOUNT_LOGIN  } from "../../../utils/pathMap";
 class Index extends Component {
   state = {
     // 手机号码
@@ -16,11 +18,11 @@ class Index extends Component {
     console.log(phoneNumber);
   }
   // 手机号码点击 完成
-  phoneNumberSubmitEditing = () => {
+  phoneNumberSubmitEditing = async() => {
     /* 
     1 对手机号码的合法性做校验 -  正则
        1 不通过  提示
-    2 将手机号码发送到后台对应接口 -> 获取验证码
+    2 将手机号码发送到后台对应接口 -> 获取验证码  axios
     3 将登录页面切换成 填写验证码的界面 
      */
     //  validator.validatePhone
@@ -31,6 +33,9 @@ class Index extends Component {
       this.setState({ phoneValid });
       return;
     }
+
+   const res=await request.post(ACCOUNT_LOGIN,{phone:phoneNumber});
+   console.log(res);
 
   }
   render() {
