@@ -6,11 +6,12 @@ class Index extends Component {
 
   static defaultProps = {
     style: {},
-    textStyle: {}
+    textStyle: {},
+    disabled:false
   }
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress} style={{ width: "100%", height: "100%", ...this.props.style, overflow: "hidden" }}  >
+      <TouchableOpacity disabled={this.props.disabled} onPress={this.props.onPress} style={{ width: "100%", height: "100%", ...this.props.style, overflow: "hidden" }}  >
         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#9b63cd', '#e0708c']} style={styles.linearGradient}>
           <Text style={{ ...styles.buttonText, ...this.props.textStyle }}>{this.props.children}</Text>
         </LinearGradient>

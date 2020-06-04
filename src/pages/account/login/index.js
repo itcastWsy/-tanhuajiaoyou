@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar,StyleSheet } from 'react-native';
+import { View, Text, Image, StatusBar, StyleSheet } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
@@ -15,9 +15,13 @@ class Index extends Component {
     // 手机号码是否合法
     phoneValid: true,
     // 是否显示登录页面 
-    showLogin: false,
+    showLogin: true,
     // 验证码输入框的值
-    vcodeTxt: ""
+    vcodeTxt: "",
+    // 倒计时按钮的文本
+    btnText: "重新获取",
+    // 是否在倒计时中
+    isCountDowning:false
   }
 
   // 登录框手机号码输入 
@@ -37,6 +41,7 @@ class Index extends Component {
         1 等待框 ? 
         2 自动 ? -> axios的 拦截器 
     3 将登录页面切换成 填写验证码的界面 
+    4 开启定时器
      */
     //  validator.validatePhone
     const { phoneNumber } = this.state;
@@ -51,10 +56,35 @@ class Index extends Component {
     if (res.code == "10000") {
       // 请求成功
       this.setState({ showLogin: false });
+      // 开启定时器
+      this.countDown();
     } else {
 
     }
 
+  }
+
+  // 开启获取验证码的定时器
+  countDown = () => {
+    console.log("开启倒计时");
+    if(this.state.isCountDowning){
+      return;
+    }
+    
+
+    this.setState({ isCountDowning: true });
+
+    let seconds = 5;
+    // 重新获取(5s)
+    this.setState({ btnText: `重新获取(${seconds}s)` });
+    let timeId = setInterval(() => {
+      seconds--;
+      this.setState({ btnText: `重新获取(${seconds}s)` });
+      if (seconds === 0) {
+        clearInterval(timeId);
+        this.setState({ btnText: "重新获取" });
+      }
+    }, 1000);
   }
 
   // 渲染登录页面
@@ -82,9 +112,13 @@ class Index extends Component {
         <THButton onPress={this.phoneNumberSubmitEditing} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>获取验证码</THButton></View>
     </View>
   }
+  // 点击重新获取按钮
+  repGetVcode=()=>{
+    this.countDown();
+  }
   // 渲染填写验证码 页面
   renderVcode = () => {
-    const { phoneNumber, vcodeTxt} = this.state;
+    const { phoneNumber, vcodeTxt, btnText,isCountDowning } = this.state;
     return <View>
       <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>输入6位验证码</Text></View>
       <View style={{ marginTop: pxToDp(10) }}><Text style={{ color: "#888" }}>已发到:+86 {phoneNumber}</Text></View>
@@ -98,7 +132,7 @@ class Index extends Component {
           <Text key={index} style={[styles.cell, isFocused && styles.focusCell]} >{symbol || (isFocused ? <Cursor /> : null)}</Text>
         )}
       /></View>
-      <View style={{ marginTop: pxToDp(10) }}><THButton style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>重新获取</THButton></View>
+      <View style={{ marginTop: pxToDp(10) }}><THButton disabled={isCountDowning} onPress={this.repGetVcode} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>{btnText}</THButton></View>
     </View>
   }
   // 验证码输入框的值改变事件
