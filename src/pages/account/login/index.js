@@ -13,7 +13,7 @@ class Index extends Component {
     // 手机号码是否合法
     phoneValid: true,
     // 是否显示登录页面 
-    showLogin: true
+    showLogin: false
   }
 
   // 登录框手机号码输入 
@@ -44,10 +44,9 @@ class Index extends Component {
     }
 
     const res = await request.post(ACCOUNT_LOGIN, { phone: phoneNumber });
-    console.log(res);
     if (res.code == "10000") {
       // 请求成功
-      this.setState({ showLogin:false  });
+      this.setState({ showLogin: false });
     } else {
 
     }
@@ -82,7 +81,11 @@ class Index extends Component {
   // 渲染填写验证码 页面
   renderVcode = () => {
     const { phoneNumber, phoneValid, showLogin } = this.state;
-    return <View><Text>填写验证码</Text></View>
+    return <View>
+      <View><Text style={{fontSize:pxToDp(25),color:"#888",fontWeight:"bold"}}>输入6位验证码</Text></View>
+      <View style={{marginTop:pxToDp(15)}}><Text style={{color:"#888"}}>已发到:+86 {phoneNumber}</Text></View>
+      <View style={{marginTop:pxToDp(15)}}><THButton style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>重新获取</THButton></View>
+    </View>
   }
   render() {
     const { phoneNumber, phoneValid, showLogin } = this.state;
