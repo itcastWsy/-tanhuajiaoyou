@@ -11,10 +11,12 @@ class Index extends Component {
     // 手机号码 
     phoneNumber: "15915912345",
     // 手机号码是否合法
-    phoneValid: true
+    phoneValid: true,
+    // 是否显示登录页面 
+    showLogin: true
   }
 
-  // 登录框手机号码输入
+  // 登录框手机号码输入 
   phoneNumberChangeText = (phoneNumber) => {
     this.setState({ phoneNumber });
     console.log(phoneNumber);
@@ -43,15 +45,47 @@ class Index extends Component {
 
     const res = await request.post(ACCOUNT_LOGIN, { phone: phoneNumber });
     console.log(res);
+    if (res.code == "10000") {
+      // 请求成功
+      this.setState({ showLogin:false  });
+    } else {
+
+    }
 
   }
 
-  // 点击 获取验证码事件
-  handleGetVCode = () => {
-    console.log("点击 获取验证码事件");
+  // 渲染登录页面
+  renderLogin = () => {
+    const { phoneNumber, phoneValid } = this.state;
+    return <View>
+      {/* 标题 */}
+      <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>手机号登录注册</Text></View>
+      {/* 输入框 */}
+      <View style={{ marginTop: pxToDp(30) }}>
+        <Input
+          placeholder='请输入手机号码'
+          maxLength={11}
+          keyboardType="phone-pad"
+          value={phoneNumber}
+          inputStyle={{ color: "#333" }}
+          onChangeText={this.phoneNumberChangeText}
+          errorMessage={phoneValid ? "" : "手机号码格式不正确"}
+          onSubmitEditing={this.phoneNumberSubmitEditing}
+          leftIcon={{ type: 'font-awesome', name: 'phone', color: "#ccc", size: pxToDp(20) }}
+        />
+      </View>
+      {/* 渐变按钮  */}
+      <View>
+        <THButton onPress={this.phoneNumberSubmitEditing} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>获取验证码</THButton></View>
+    </View>
+  }
+  // 渲染填写验证码 页面
+  renderVcode = () => {
+    const { phoneNumber, phoneValid, showLogin } = this.state;
+    return <View><Text>填写验证码</Text></View>
   }
   render() {
-    const { phoneNumber, phoneValid } = this.state;
+    const { phoneNumber, phoneValid, showLogin } = this.state;
     return (
       <View>
         {/* 0.0  状态栏 开始 */}
@@ -65,27 +99,8 @@ class Index extends Component {
         {/* 2.0 内容 开始 */}
         <View style={{ padding: pxToDp(20) }}>
           {/* 2.1 登录 开始 */}
-          <View>
-            {/* 标题 */}
-            <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>手机号登录注册</Text></View>
-            {/* 输入框 */}
-            <View style={{ marginTop: pxToDp(30) }}>
-              <Input
-                placeholder='请输入手机号码'
-                maxLength={11}
-                keyboardType="phone-pad"
-                value={phoneNumber}
-                inputStyle={{ color: "#333" }}
-                onChangeText={this.phoneNumberChangeText}
-                errorMessage={phoneValid ? "" : "手机号码格式不正确"}
-                onSubmitEditing={this.phoneNumberSubmitEditing}
-                leftIcon={{ type: 'font-awesome', name: 'phone', color: "#ccc", size: pxToDp(20) }}
-              />
-            </View>
-            {/* 渐变按钮  */}
-            <View>
-              <THButton onPress={this.handleGetVCode} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>获取验证码</THButton></View>
-          </View>
+          {showLogin ? this.renderLogin() : this.renderVcode()}
+
           {/* 2.1 登录 结束 */}
         </View>
         {/* 2.0 内容 结束 */}
