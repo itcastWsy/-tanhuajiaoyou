@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar } from 'react-native';
+import { View, Text, Image, StatusBar,StyleSheet } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
 import request from "../../../utils/request";
 import { ACCOUNT_LOGIN } from "../../../utils/pathMap";
 import THButton from "../../../components/THButton";
+import { CodeField, Cursor } from 'react-native-confirmation-code-field';
+
 class Index extends Component {
   state = {
     // 手机号码 
@@ -13,7 +15,9 @@ class Index extends Component {
     // 手机号码是否合法
     phoneValid: true,
     // 是否显示登录页面 
-    showLogin: false
+    showLogin: false,
+    // 验证码输入框的值
+    vcodeTxt: ""
   }
 
   // 登录框手机号码输入 
@@ -60,7 +64,7 @@ class Index extends Component {
       {/* 标题 */}
       <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>手机号登录注册</Text></View>
       {/* 输入框 */}
-      <View style={{ marginTop: pxToDp(30) }}>
+      <View style={{ marginTop: pxToDp(25) }}>
         <Input
           placeholder='请输入手机号码'
           maxLength={11}
@@ -80,12 +84,26 @@ class Index extends Component {
   }
   // 渲染填写验证码 页面
   renderVcode = () => {
-    const { phoneNumber, phoneValid, showLogin } = this.state;
+    const { phoneNumber, vcodeTxt} = this.state;
     return <View>
-      <View><Text style={{fontSize:pxToDp(25),color:"#888",fontWeight:"bold"}}>输入6位验证码</Text></View>
-      <View style={{marginTop:pxToDp(15)}}><Text style={{color:"#888"}}>已发到:+86 {phoneNumber}</Text></View>
-      <View style={{marginTop:pxToDp(15)}}><THButton style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>重新获取</THButton></View>
+      <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>输入6位验证码</Text></View>
+      <View style={{ marginTop: pxToDp(10) }}><Text style={{ color: "#888" }}>已发到:+86 {phoneNumber}</Text></View>
+      <View><CodeField
+        value={vcodeTxt}
+        onChangeText={this.onVcodeChangeText}
+        cellCount={6}
+        rootStyle={styles.codeFiledRoot}
+        keyboardType="number-pad"
+        renderCell={({ index, symbol, isFocused }) => (
+          <Text key={index} style={[styles.cell, isFocused && styles.focusCell]} >{symbol || (isFocused ? <Cursor /> : null)}</Text>
+        )}
+      /></View>
+      <View style={{ marginTop: pxToDp(10) }}><THButton style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>重新获取</THButton></View>
     </View>
+  }
+  // 验证码输入框的值改变事件
+  onVcodeChangeText = (vcodeTxt) => {
+    this.setState({ vcodeTxt });
   }
   render() {
     const { phoneNumber, phoneValid, showLogin } = this.state;
@@ -96,7 +114,7 @@ class Index extends Component {
         {/* 0.0  状态栏 结束 */}
         {/* 1.0 背景图片 开始 */}
         {/* 200 单位 dp 单位px -> dp单位? */}
-        <Image style={{ width: "100%", height: pxToDp(240) }} source={require("../../../res/profileBackground.jpg")} />
+        <Image style={{ width: "100%", height: pxToDp(220) }} source={require("../../../res/profileBackground.jpg")} />
         {/* 1.0 背景图片 结束*/}
 
         {/* 2.0 内容 开始 */}
@@ -111,4 +129,23 @@ class Index extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, padding: 20 },
+  title: { textAlign: 'center', fontSize: 30 },
+  codeFiledRoot: { marginTop: 20 },
+  cell: {
+    width: 40,
+    height: 40,
+    lineHeight: 38,
+    fontSize: 24,
+    borderBottomWidth: 2,
+    borderColor: '#00000030',
+    textAlign: 'center',
+    color: "#7d53ea"
+  },
+  focusCell: {
+    borderColor: '#7d53ea'
+  },
+});
 export default Index;
