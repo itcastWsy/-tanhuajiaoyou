@@ -5,7 +5,7 @@ import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
 import request from "../../../utils/request";
 import {ACCOUNT_LOGIN  } from "../../../utils/pathMap";
-import Toast from "../../../utils/Toast";
+
 class Index extends Component { 
   state = {
     // 手机号码
@@ -13,14 +13,7 @@ class Index extends Component {
     // 手机号码是否合法
     phoneValid: true
   }
-  constructor(){
-    super(); 
-    Toast.showLoading("请求中");
 
-    setTimeout(() => {
-      Toast.hideLoading();
-    }, 2000);
-  }
   // 登录框手机号码输入
   phoneNumberChangeText = (phoneNumber) => {
     this.setState({ phoneNumber });
