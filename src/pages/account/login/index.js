@@ -8,7 +8,7 @@ import {ACCOUNT_LOGIN  } from "../../../utils/pathMap";
 
 class Index extends Component { 
   state = {
-    // 手机号码
+    // 手机号码 
     phoneNumber: "15915912345",
     // 手机号码是否合法
     phoneValid: true
