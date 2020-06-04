@@ -4,9 +4,9 @@ import { pxToDp } from "../../../utils/stylesKits";
 import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
 import request from "../../../utils/request";
-import {ACCOUNT_LOGIN  } from "../../../utils/pathMap";
-
-class Index extends Component { 
+import { ACCOUNT_LOGIN } from "../../../utils/pathMap";
+import THButton from "../../../components/THButton";
+class Index extends Component {
   state = {
     // 手机号码 
     phoneNumber: "15915912345",
@@ -20,7 +20,7 @@ class Index extends Component {
     console.log(phoneNumber);
   }
   // 手机号码点击 完成
-  phoneNumberSubmitEditing = async() => {
+  phoneNumberSubmitEditing = async () => {
     /* 
     1 对手机号码的合法性做校验 -  正则
        1 不通过  提示
@@ -34,16 +34,21 @@ class Index extends Component {
      */
     //  validator.validatePhone
     const { phoneNumber } = this.state;
-    const phoneValid = validator.validatePhone(phoneNumber); 
+    const phoneValid = validator.validatePhone(phoneNumber);
     if (!phoneValid) {
       // 没有通过
       this.setState({ phoneValid });
       return;
     }
 
-   const res=await request.post(ACCOUNT_LOGIN,{phone:phoneNumber});
-   console.log(res);
+    const res = await request.post(ACCOUNT_LOGIN, { phone: phoneNumber });
+    console.log(res);
 
+  }
+
+  // 点击 获取验证码事件
+  handleGetVCode = () => {
+    console.log("点击 获取验证码事件");
   }
   render() {
     const { phoneNumber, phoneValid } = this.state;
@@ -64,7 +69,7 @@ class Index extends Component {
             {/* 标题 */}
             <View><Text style={{ fontSize: pxToDp(25), color: "#888", fontWeight: "bold" }}>手机号登录注册</Text></View>
             {/* 输入框 */}
-            <View style={{ marginTop: pxToDp(30) }}> 
+            <View style={{ marginTop: pxToDp(30) }}>
               <Input
                 placeholder='请输入手机号码'
                 maxLength={11}
@@ -77,6 +82,9 @@ class Index extends Component {
                 leftIcon={{ type: 'font-awesome', name: 'phone', color: "#ccc", size: pxToDp(20) }}
               />
             </View>
+            {/* 渐变按钮  */}
+            <View>
+              <THButton onPress={this.handleGetVCode} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>获取验证码</THButton></View>
           </View>
           {/* 2.1 登录 结束 */}
         </View>
