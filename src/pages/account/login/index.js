@@ -5,12 +5,17 @@ import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
 import request from "../../../utils/request";
 import {ACCOUNT_LOGIN  } from "../../../utils/pathMap";
-class Index extends Component {
+import {Toast  } from "teaset";
+class Index extends Component { 
   state = {
     // 手机号码
     phoneNumber: "15915912345",
     // 手机号码是否合法
     phoneValid: true
+  }
+  constructor(){
+    super();
+    Toast.message('Toast message',10000);      
   }
   // 登录框手机号码输入
   phoneNumberChangeText = (phoneNumber) => {
@@ -23,11 +28,16 @@ class Index extends Component {
     1 对手机号码的合法性做校验 -  正则
        1 不通过  提示
     2 将手机号码发送到后台对应接口 -> 获取验证码  axios
+      1 发送异步请求的时候 自动的显示等待框
+      2 请求回来  等待框  自动隐藏
+      3 关键
+        1 等待框 ? 
+        2 自动 ? -> axios的 拦截器 
     3 将登录页面切换成 填写验证码的界面 
      */
     //  validator.validatePhone
     const { phoneNumber } = this.state;
-    const phoneValid = validator.validatePhone(phoneNumber);
+    const phoneValid = validator.validatePhone(phoneNumber); 
     if (!phoneValid) {
       // 没有通过
       this.setState({ phoneValid });
