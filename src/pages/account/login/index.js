@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text,Image ,StatusBar} from 'react-native';
+import {pxToDp  } from "../../../utils/stylesKits";
 class Index extends Component {
   render() {
     return ( 
@@ -9,7 +10,7 @@ class Index extends Component {
         {/* 0.0  状态栏 结束 */}
         {/* 1.0 背景图片 开始 */}
         {/* 200 单位 dp 单位px -> dp单位? */}
-        <Image style={{width:"100%",height:200}} source={require("../../../res/profileBackground.jpg")} />
+        <Image style={{width:"100%",height:pxToDp(240)}} source={require("../../../res/profileBackground.jpg")} />
         {/* 1.0 背景图片 结束*/}
       </View>
     );
