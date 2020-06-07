@@ -7,11 +7,12 @@ import request from "../../../utils/request";
 import { ACCOUNT_LOGIN } from "../../../utils/pathMap";
 import THButton from "../../../components/THButton";
 import { CodeField, Cursor } from 'react-native-confirmation-code-field';
-
+import Toast from "../../../utils/Toast";
+import {ACCOUNT_VALIDATEVCODE  } from "../../../utils/pathMap";
 class Index extends Component {
   state = {
     // 手机号码 
-    phoneNumber: "15915912345",
+    phoneNumber: "15915912346",
     // 手机号码是否合法
     phoneValid: true,
     // 是否显示登录页面 
@@ -82,9 +83,43 @@ class Index extends Component {
       this.setState({ btnText: `重新获取(${seconds}s)` });
       if (seconds === 0) {
         clearInterval(timeId);
-        this.setState({ btnText: "重新获取" });
+        this.setState({ btnText: "重新获取",isCountDowning:false });
       }
     }, 1000);
+  }
+
+  // 验证码输入完毕事件
+  onVcodeSubmitEditing=async()=>{
+    /* 
+    1 对验证码做校验  长度
+    2 将手机号码和验证码 一起发送到后台 
+    3 返回值 有 isNew  
+    4 新用户 -> 完善个人信息的页面 
+    5 老用户 -> 交友 - 首页
+     */
+
+     const { vcodeTxt,phoneNumber}=this.state;
+     if(vcodeTxt.length!=6){
+      Toast.message("验证码不正确",2000,"center");
+       return;
+     }
+
+     const res=await request.post(ACCOUNT_VALIDATEVCODE,{
+       phone:phoneNumber,
+       vcode:vcodeTxt
+     });
+     if(res.code!="10000"){
+      console.log(res);
+       return;
+     }
+
+     if(res.data.isNew){
+      //  新用户 UserInfo
+      this.props.navigation.navigate("UserInfo");
+     }else{
+      //  老用户
+      alert("老用户 跳转交友页面");
+     }
   }
 
   // 渲染登录页面
@@ -125,6 +160,7 @@ class Index extends Component {
       <View><CodeField
         value={vcodeTxt}
         onChangeText={this.onVcodeChangeText}
+        onSubmitEditing={this.onVcodeSubmitEditing}
         cellCount={6}
         rootStyle={styles.codeFiledRoot}
         keyboardType="number-pad"
