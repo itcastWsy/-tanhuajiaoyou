@@ -4,6 +4,7 @@ import { pxToDp } from "../../../utils/stylesKits";
 import SvgUri from "react-native-svg-uri";
 import { male, female } from "../../../res/fonts/iconSvg";
 import {Input  } from "react-native-elements";
+import DatePicker from "react-native-datepicker";
 class Index extends Component {
   state={
     // 昵称
@@ -29,7 +30,9 @@ class Index extends Component {
     this.setState({ gender });
   }
   render() {
-    const {gender,nickname}=this.state;
+    const {gender,nickname,birthday}=this.state;
+    const dateNow=new Date();
+    const currentDate=`${dateNow.getFullYear()}-${dateNow.getMonth()+1}-${dateNow.getDate()}`;
     return (
       <View style={{ backgroundColor: "#fff", flex: 1, padding: pxToDp(20) }}>
         {/* 1.0 标题 开始 */}
@@ -61,6 +64,40 @@ class Index extends Component {
         />
         </View>
         {/* 3.0 昵称 结束 */}
+        {/* 4.0 日期 开始 */}
+        <View> 
+        <DatePicker
+        androidMode="spinner"
+        style={{width: "100%"}}
+        date={birthday}
+        mode="date"
+        placeholder="设置生日"
+        format="YYYY-MM-DD"
+        minDate="1900-01-01"
+        maxDate={currentDate}
+        confirmBtnText="确定"
+        cancelBtnText="取消"
+        customStyles={{
+          dateIcon: {
+            display:"none"
+          },
+          dateInput: {
+            marginLeft: pxToDp(10),
+            borderWidth:0,
+            borderBottomWidth:pxToDp(1.1),
+            alignItems:"flex-start",
+            paddingLeft:pxToDp(4)
+          },
+          placeholderText:{
+            fontSize:pxToDp(18),
+            color:"#afafaf"
+          }
+          
+        }}
+        onDateChange={(birthday) => {this.setState({birthday})}}
+      />
+        </View>
+        {/* 4.0 日期 结束 */}
       </View>
     );
   }
