@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import SvgUri from "react-native-svg-uri";
 import { male, female } from "../../../res/fonts/iconSvg";
+import {Input  } from "react-native-elements";
 class Index extends Component {
   state={
     // 昵称
@@ -28,7 +29,7 @@ class Index extends Component {
     this.setState({ gender });
   }
   render() {
-    const {gender}=this.state;
+    const {gender,nickname}=this.state;
     return (
       <View style={{ backgroundColor: "#fff", flex: 1, padding: pxToDp(20) }}>
         {/* 1.0 标题 开始 */}
@@ -51,6 +52,15 @@ class Index extends Component {
           </View>
         </View>
         {/* 2.0 性别 结束 */}
+        {/* 3.0 昵称 开始 */}
+        <View>
+        <Input 
+        value={nickname}
+        placeholder="设置昵称"
+        onChangeText={(nickname)=>this.setState({nickname})}
+        />
+        </View>
+        {/* 3.0 昵称 结束 */}
       </View>
     );
   }
