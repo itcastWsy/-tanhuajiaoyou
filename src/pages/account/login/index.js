@@ -9,6 +9,9 @@ import THButton from "../../../components/THButton";
 import { CodeField, Cursor } from 'react-native-confirmation-code-field';
 import Toast from "../../../utils/Toast";
 import {ACCOUNT_VALIDATEVCODE  } from "../../../utils/pathMap";
+import {inject,observer  } from "mobx-react";
+@inject("RootStore")
+@observer
 class Index extends Component {
   state = {
     // 手机号码 
@@ -93,6 +96,8 @@ class Index extends Component {
     /* 
     1 对验证码做校验  长度
     2 将手机号码和验证码 一起发送到后台 
+    2.5 
+      将用户数据存放到 mobx中
     3 返回值 有 isNew  
     4 新用户 -> 完善个人信息的页面 
     5 老用户 -> 交友 - 首页
@@ -112,6 +117,9 @@ class Index extends Component {
       console.log(res);
        return;
      }
+     
+    //  存储用户数据到 mobx中
+    this.props.RootStore.setUserInfo(phoneNumber,res.data.token,res.data.id);
 
      if(res.data.isNew){
       //  新用户 UserInfo

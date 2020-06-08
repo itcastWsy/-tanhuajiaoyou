@@ -12,7 +12,9 @@ import THButton from "../../../components/THButton";
 import Toast from "../../../utils/Toast";
 import ImagePicker from 'react-native-image-crop-picker';
 import { Overlay } from "teaset";
-
+import {inject,observer  } from "mobx-react";
+@inject("RootStore")
+@observer
 class Index extends Component {
   state = {
     // 昵称
@@ -33,9 +35,9 @@ class Index extends Component {
     address: ""
   }
   async componentDidMount() {
-
+    console.log(this.props);
     const res = await Geo.getCityByLocation();
-    console.log(res);
+
     const address = res.regeocode.formatted_address;
     const city = res.regeocode.addressComponent.city.replace("市", "");
     this.setState({ address, city });
