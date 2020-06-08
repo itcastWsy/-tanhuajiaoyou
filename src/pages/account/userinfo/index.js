@@ -10,6 +10,9 @@ import Picker from 'react-native-picker';
 import CityJson from "../../../res/citys.json";
 import THButton from "../../../components/THButton";
 import Toast from "../../../utils/Toast";
+import ImagePicker from 'react-native-image-crop-picker';
+
+
 class Index extends Component {
   state = {
     // 昵称
@@ -42,7 +45,7 @@ class Index extends Component {
     this.setState({ gender });
   }
   // 选择城市
-  showCityPicker=()=>{
+  showCityPicker = () => {
     Picker.init({
       //  pickerData 要显示哪些数据 全国城市数据?
       pickerData: CityJson,
@@ -66,7 +69,7 @@ class Index extends Component {
   }
 
   // 点击了 设置头像按钮
-  chooeseHeadImg=()=>{
+  chooeseHeadImg = async () => {
     /* 
     1 校验 用户的昵称 生日 当前地址 city
     2 使用图片裁剪插件 
@@ -76,12 +79,20 @@ class Index extends Component {
       1 执行 极光注册 极光的登录
       2 跳转到交友-首页 
      */
-    const {nickname,birthday,city}=this.state;
+    const { nickname, birthday, city } = this.state;
 
-    if(!nickname||!birthday||!city){
-      Toast.sad("昵称或者生日或者城市不合法",2000,"center");
+    if (!nickname || !birthday || !city) {
+      Toast.sad("昵称或者生日或者城市不合法", 2000, "center");
       return;
     }
+
+    // 获取到 选中后的图片
+    const image = await ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    });
+    console.log(image);
   }
   render() {
     const { gender, nickname, birthday, city } = this.state;
@@ -157,7 +168,7 @@ class Index extends Component {
         </View>
         {/* 4.0 日期 结束 */}
         {/* 5.0 地址 开始 */}
-        <View style={{marginTop:pxToDp(20)}} >
+        <View style={{ marginTop: pxToDp(20) }} >
           <TouchableOpacity onPress={this.showCityPicker}>
             <Input
               value={"当前定位:" + city}
@@ -170,14 +181,14 @@ class Index extends Component {
 
         {/* 6.0 选择头像 开始 */}
         <View>
-        <THButton
-        onPress={this.chooeseHeadImg}
-        style={{
-          height:pxToDp(40),
-          borderRadius:pxToDp(20),
-          alignSelf:'center'
-        }}
-        >设置头像</THButton>
+          <THButton
+            onPress={this.chooeseHeadImg}
+            style={{
+              height: pxToDp(40),
+              borderRadius: pxToDp(20),
+              alignSelf: 'center'
+            }}
+          >设置头像</THButton>
         </View>
         {/* 6.0 选择头像 结束 */}
       </View>
