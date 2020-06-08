@@ -14,7 +14,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { Overlay } from "teaset";
 import { inject, observer } from "mobx-react";
 import request from '../../../utils/request';
-import { ACCOUNT_CHECKHEADIMAGE } from '../../../utils/pathMap';
+import { ACCOUNT_CHECKHEADIMAGE ,ACCOUNT_REGINFO} from '../../../utils/pathMap';
 @inject("RootStore")
 @observer
 class Index extends Component {
@@ -39,10 +39,12 @@ class Index extends Component {
   async componentDidMount() {
 
     const res = await Geo.getCityByLocation();
-
+    console.log(res);
     const address = res.regeocode.formatted_address;
     const city = res.regeocode.addressComponent.city.replace("市", "");
-    this.setState({ address, city });
+    const lng=res.regeocode.addressComponent.streetNumber.location.split(",")[0];
+    const lat=res.regeocode.addressComponent.streetNumber.location.split(",")[1];
+    this.setState({ address, city,lng,lat });
 
   }
   // 选择性别
@@ -132,11 +134,19 @@ class Index extends Component {
 
     console.log(res0);
     // 是否上传头像成功
-    if (res0.code === "10000") {
-      // 成功
-    } else {
+    if (res0.code !== "10000") {
       // 失败
+      return ;
     }
+
+    // 构造参数 完善个人信息
+    // state
+    let params=this.state;
+    params.header=res0.data.headImgPath;
+    console.log(params);
+
+    const res1=await request.privatePost(ACCOUNT_REGINFO,params);
+    console.log(res1);
 
   }
   // 上传头像
