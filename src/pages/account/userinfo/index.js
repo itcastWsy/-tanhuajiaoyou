@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import SvgUri from "react-native-svg-uri";
 import { male, female } from "../../../res/fonts/iconSvg";
@@ -11,7 +11,7 @@ import CityJson from "../../../res/citys.json";
 import THButton from "../../../components/THButton";
 import Toast from "../../../utils/Toast";
 import ImagePicker from 'react-native-image-crop-picker';
-
+import { Overlay } from "teaset";
 
 class Index extends Component {
   state = {
@@ -33,6 +33,7 @@ class Index extends Component {
     address: ""
   }
   async componentDidMount() {
+
     const res = await Geo.getCityByLocation();
     console.log(res);
     const address = res.regeocode.formatted_address;
@@ -74,6 +75,7 @@ class Index extends Component {
     1 校验 用户的昵称 生日 当前地址 city
     2 使用图片裁剪插件 
     3 将选择好的图片 上传到 后台 
+      1 rn中想要显示gif动态图 需要做一些配置 
     4 用户的昵称 生日 当前地址 .. 头像的地址  提交到后台 -> 完成 信息填写
     5 成功 
       1 执行 极光注册 极光的登录
@@ -92,7 +94,35 @@ class Index extends Component {
       height: 400,
       cropping: true
     });
+    // image.path
     console.log(image);
+
+    // 显示审核中 效果
+    let overlayView = (
+      <Overlay.View
+        style={{ flex: 1, backgroundColor: "#000" }}
+        modal={true}
+        overlayOpacity={0}
+        ref={v => this.overlayView = v}
+      >
+        <View style={{
+          marginTop: pxToDp(30),
+          alignSelf: "center",
+          width: pxToDp(334),
+          height: pxToDp(334),
+          position: "relative",
+          justifyContent: 'center',
+          alignItems: "center"
+        }}>
+          <Image style={{
+            width: "100%", height: "100%",
+            position: 'absolute', left: 0, top: 0, zIndex: 100
+          }} source={require("../../../res/scan.gif")} />
+          <Image source={{ uri: image.path }} style={{ width: "60%", height: "60%" }} />
+        </View>
+      </Overlay.View>
+    );
+    Overlay.show(overlayView);
   }
   render() {
     const { gender, nickname, birthday, city } = this.state;
