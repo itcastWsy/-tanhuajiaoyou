@@ -8,6 +8,7 @@ import DatePicker from "react-native-datepicker";
 import Geo from "../../../utils/Geo";
 import Picker from 'react-native-picker';
 import CityJson from "../../../res/citys.json";
+import THButton from "../../../components/THButton";
 class Index extends Component {
   state = {
     // 昵称
@@ -61,6 +62,19 @@ class Index extends Component {
       }
     });
     Picker.show();
+  }
+
+  // 点击了 设置头像按钮
+  chooeseHeadImg=()=>{
+    /* 
+    1 校验 用户的昵称 生日 当前地址 city
+    2 使用图片裁剪插件 
+    3 将选择好的图片 上传到 后台 
+    4 用户的昵称 生日 当前地址 .. 头像的地址  提交到后台 -> 完成 信息填写
+    5 成功 
+      1 执行 极光注册 极光的登录
+      2 跳转到交友-首页 
+     */
   }
   render() {
     const { gender, nickname, birthday, city } = this.state;
@@ -146,6 +160,19 @@ class Index extends Component {
           </TouchableOpacity>
         </View>
         {/* 5.0 地址 结束 */}
+
+        {/* 6.0 选择头像 开始 */}
+        <View>
+        <THButton
+        onPress={this.chooeseHeadImg}
+        style={{
+          height:pxToDp(40),
+          borderRadius:pxToDp(20),
+          alignSelf:'center'
+        }}
+        >设置头像</THButton>
+        </View>
+        {/* 6.0 选择头像 结束 */}
       </View>
     );
   }
