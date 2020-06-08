@@ -9,6 +9,7 @@ import Geo from "../../../utils/Geo";
 import Picker from 'react-native-picker';
 import CityJson from "../../../res/citys.json";
 import THButton from "../../../components/THButton";
+import Toast from "../../../utils/Toast";
 class Index extends Component {
   state = {
     // 昵称
@@ -75,6 +76,12 @@ class Index extends Component {
       1 执行 极光注册 极光的登录
       2 跳转到交友-首页 
      */
+    const {nickname,birthday,city}=this.state;
+
+    if(!nickname||!birthday||!city){
+      Toast.sad("昵称或者生日或者城市不合法",2000,"center");
+      return;
+    }
   }
   render() {
     const { gender, nickname, birthday, city } = this.state;
