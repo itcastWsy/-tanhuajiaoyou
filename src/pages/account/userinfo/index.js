@@ -5,6 +5,7 @@ import SvgUri from "react-native-svg-uri";
 import { male, female } from "../../../res/fonts/iconSvg";
 import {Input  } from "react-native-elements";
 import DatePicker from "react-native-datepicker";
+import Geo from "../../../utils/Geo";
 class Index extends Component {
   state={
     // 昵称
@@ -24,7 +25,11 @@ class Index extends Component {
     // 详细的地址
     address: ""
   }
-
+async componentDidMount() {
+  const res=await Geo.getCityByLocation();
+  console.log(res);
+  
+}
   // 选择性别
   chooeseGender=(gender)=>{
     this.setState({ gender });

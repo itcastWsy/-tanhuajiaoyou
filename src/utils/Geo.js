@@ -23,11 +23,6 @@ class Geo {
     })
   }
   async getCityByLocation() {
-    await init({
-      // 来自于 高德地图中的第二个应用 android 应用key
-      ios: "e8b092f4b23cef186bd1c4fdd975bf38",
-      android: "e8b092f4b23cef186bd1c4fdd975bf38"
-    });
     const { longitude, latitude } = await this.getCurrentPosition();
     const res = await axios.get("https://restapi.amap.com/v3/geocode/regeo", {
       // key  高德地图中第一个应用的key
