@@ -12,7 +12,7 @@ import THButton from "../../../components/THButton";
 import Toast from "../../../utils/Toast";
 import ImagePicker from 'react-native-image-crop-picker';
 import { Overlay } from "teaset";
-import {inject,observer  } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import request from '../../../utils/request';
 import { ACCOUNT_CHECKHEADIMAGE } from '../../../utils/pathMap';
 @inject("RootStore")
@@ -37,7 +37,7 @@ class Index extends Component {
     address: ""
   }
   async componentDidMount() {
-   
+
     const res = await Geo.getCityByLocation();
 
     const address = res.regeocode.formatted_address;
@@ -127,34 +127,38 @@ class Index extends Component {
     );
     Overlay.show(overlayView);
 
-    // 构造参数 发送到后台 完成 头像上传
-    let formData=new FormData();
-    formData.append("headPhoto",{
-      // 本地图片的地址
-      uri:image.path,
-      // 图片的类型
-      type:image.mime,
-      // 图片的名称 file:///store/com/pic/dsf/d343.jpg
-      name:image.path.split("/").pop()
-    });
-// 因为 我们打开了 调式模式  调试工具 对网络拦截处理 导致一些请求失败
-// 不要打开任何调试工具 只使用控制台即可 
-    // 执行头像上传
-    const res0=await request.post(ACCOUNT_CHECKHEADIMAGE,formData,{
-      headers:{
-        "Content-Type": "multipart/form-data",
-        "Authorization": `Bearer ${this.props.RootStore.token}`
-      }
-    })
+    // 上传头像
+    const res0 = await this.uploadHeadImg(image);
 
     console.log(res0);
     // 是否上传头像成功
-    if(res0.code==="10000"){
+    if (res0.code === "10000") {
       // 成功
-    }else{
+    } else {
       // 失败
     }
 
+  }
+  // 上传头像
+  uploadHeadImg = (image) => {
+    // 构造参数 发送到后台 完成 头像上传
+    let formData = new FormData();
+    formData.append("headPhoto", {
+      // 本地图片的地址
+      uri: image.path,
+      // 图片的类型
+      type: image.mime,
+      // 图片的名称 file:///store/com/pic/dsf/d343.jpg
+      name: image.path.split("/").pop()
+    });
+    // 因为 我们打开了 调式模式  调试工具 对网络拦截处理 导致一些请求失败
+    // 不要打开任何调试工具 只使用控制台即可 
+    // 执行头像上传
+    return request.privatePost(ACCOUNT_CHECKHEADIMAGE, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
   }
   render() {
     const { gender, nickname, birthday, city } = this.state;
