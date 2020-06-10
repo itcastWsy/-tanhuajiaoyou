@@ -133,6 +133,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true // 新增的
+        manifestPlaceholders = [
+        JPUSH_APPKEY: "c0c08d3d8babc318fe25bb0c",	//在此替换你的APPKey
+        APP_CHANNEL: "developer-default"		//应用渠道号
+        ]
     }
     splits {
         abi {
@@ -194,6 +199,8 @@ dependencies {
     
     // 如果只需要支持WebP格式而不需要动图
     implementation 'com.facebook.fresco:webpsupport:2.0.0'
+    compile project(':jmessage-react-plugin') // 新增的
+    compile project(':jcore-react-native')  // 新增的
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
