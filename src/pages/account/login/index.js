@@ -15,7 +15,7 @@ import {inject,observer  } from "mobx-react";
 class Index extends Component {
   state = {
     // 手机号码 
-    phoneNumber: "15915912346",
+    phoneNumber: "18665711978",
     // 手机号码是否合法
     phoneValid: true,
     // 是否显示登录页面 
