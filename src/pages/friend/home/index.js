@@ -23,6 +23,7 @@ class Index extends Component {
          {/* 1.0 访客 开始 */}
          <Visitors/>
          {/* 1.0 访客 结束 */}
+         <View style={{height:pxToDp(3),backgroundColor:"#ccc"}} ></View>
          <PerfectGirl />
         </View>
       </HeaderImageScrollView>
