@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar, StyleSheet } from 'react-native';
+import { View, Text, Image, StatusBar, StyleSheet,AsyncStorage } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import { Input } from 'react-native-elements';
 import validator from "../../../utils/validator";
@@ -120,13 +120,18 @@ class Index extends Component {
      
     //  存储用户数据到 mobx中
     this.props.RootStore.setUserInfo(phoneNumber,res.data.token,res.data.id);
-
+    //  存储用户数据到 本地缓存中  永久
+    AsyncStorage.setItem("userinfo",JSON.stringify({
+      mobile:phoneNumber,
+      token:res.data.token,
+      userId:res.data.id
+    }))
      if(res.data.isNew){
       //  新用户 UserInfo
       this.props.navigation.navigate("UserInfo");
      }else{
       //  老用户
-      alert("老用户 跳转交友页面");
+      this.props.navigation.navigate("Tabbar");
      }
   }
 

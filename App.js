@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, AsyncStorage } from 'react-native';
 import Nav from "./src/nav";
 import Geo from "./src/utils/Geo";
 import RootStore from "./src/mobx";
@@ -10,9 +10,17 @@ class App extends Component {
     isInitGeo: false
   }
   async componentDidMount() {
+    // 获取缓存中的用户数据
+    const strUserInfo = await AsyncStorage.getItem("userinfo");
+    const userinfo = strUserInfo ? JSON.parse(strUserInfo) : {};
+    // 判断 有没有token
+    if (userinfo.token) {
+      // 把缓存中的数据 存一份到mobx中
+      RootStore.setUserInfo(userinfo.mobile, userinfo.token, userinfo.userId);
+      // 极光初始化
+      JMessage.init();
+    }
     await Geo.initGeo();
-    // 极光初始化
-    JMessage.init();
     this.setState({ isInitGeo: true });
   }
   render() {

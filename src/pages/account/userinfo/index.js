@@ -167,7 +167,7 @@ class Index extends Component {
     Toast.smile("恭喜 操作成功",2000,"center");
     // 3 跳转页面 交友页面  在登录页面 用户的判断 新旧用户的判断
     setTimeout(() => {
-      alert("跳转页面 交友页面")
+      this.props.navigation.navigate("Tabbar");
     }, 2000);
 
   }
