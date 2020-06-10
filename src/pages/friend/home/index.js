@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text,StatusBar } from 'react-native';
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import { pxToDp } from '../../../utils/stylesKits';
-
+import FriendHead from "./components/FriendHead";
 
 class Index extends Component {
   render() {
@@ -14,6 +14,7 @@ class Index extends Component {
         renderForeground={() => (
           <View style={{ height: pxToDp(130), justifyContent: "center", alignItems: "center" }} >
            <StatusBar backgroundColor={"transparent"} translucent={true}  />
+           <FriendHead/>
           </View>
         )}
       >
