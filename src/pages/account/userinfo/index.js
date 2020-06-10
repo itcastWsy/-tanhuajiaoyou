@@ -103,13 +103,15 @@ class Index extends Component {
     });
 
 
+    let overlayViewRef=null;
+
     // 显示审核中 效果
     let overlayView = (
       <Overlay.View
         style={{ flex: 1, backgroundColor: "#000" }}
         modal={true}
         overlayOpacity={0}
-        ref={v => this.overlayView = v}
+        ref={v => overlayViewRef = v}
       >
         <View style={{
           marginTop: pxToDp(30),
@@ -156,7 +158,17 @@ class Index extends Component {
 
     // 注册极光  用户名 this.props.RootStore.userId 密码:默认 用户的手机号码
     const res2=await this.jgBusiness(this.props.RootStore.userId,this.props.RootStore.mobile);
-    console.log(res2);
+    // console.log(res2);
+
+    // 做什么 ??
+    // 1 关闭 审核的浮层
+    overlayViewRef.close();
+    // 2 给出用户一个提示
+    Toast.smile("恭喜 操作成功",2000,"center");
+    // 3 跳转页面 交友页面  在登录页面 用户的判断 新旧用户的判断
+    setTimeout(() => {
+      alert("跳转页面 交友页面")
+    }, 2000);
 
   }
   // 上传头像
