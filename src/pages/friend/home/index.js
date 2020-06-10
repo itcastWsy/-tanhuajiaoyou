@@ -4,7 +4,7 @@ import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import { pxToDp } from '../../../utils/stylesKits';
 import FriendHead from "./components/FriendHead";
 import Visitors from "./components/Visitors";
-import IconFont from "../../../components/IconFont";
+import PerfectGirl from "./components/PerfectGirl";
 class Index extends Component {
   render() {
     return (
@@ -23,7 +23,7 @@ class Index extends Component {
          {/* 1.0 访客 开始 */}
          <Visitors/>
          {/* 1.0 访客 结束 */}
-        <IconFont name="iconmaozi" style={{fontSize:50}} />
+         <PerfectGirl />
         </View>
       </HeaderImageScrollView>
     );
