@@ -15,6 +15,7 @@ import { Overlay } from "teaset";
 import { inject, observer } from "mobx-react";
 import request from '../../../utils/request';
 import { ACCOUNT_CHECKHEADIMAGE ,ACCOUNT_REGINFO} from '../../../utils/pathMap';
+import JMessage from "../../../utils/JMessage";
 @inject("RootStore")
 @observer
 class Index extends Component {
@@ -146,7 +147,16 @@ class Index extends Component {
     console.log(params);
 
     const res1=await request.privatePost(ACCOUNT_REGINFO,params);
-    console.log(res1);
+    // console.log(res1);
+    if(res1.code!=="10000"){
+      // 完善信息失败
+      console.log(res1);
+      return;
+    }
+
+    // 注册极光  用户名 this.props.RootStore.userId 密码:默认 用户的手机号码
+    const res2=await this.jgBusiness(this.props.RootStore.userId,this.props.RootStore.mobile);
+    console.log(res2);
 
   }
   // 上传头像
@@ -170,6 +180,13 @@ class Index extends Component {
       }
     })
   }
+
+  // 执行极光注册
+  jgBusiness=(username,password)=>{
+    // 在 App 里面 进行极光的初始化
+    return JMessage.register(username,password);
+  }
+
   render() {
     const { gender, nickname, birthday, city } = this.state;
     const dateNow = new Date();
