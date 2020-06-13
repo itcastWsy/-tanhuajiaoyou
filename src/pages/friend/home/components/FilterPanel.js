@@ -5,7 +5,8 @@ import { pxToDp } from '../../../../utils/stylesKits';
 import SvgUri from "react-native-svg-uri";
 import { male, female } from "../../../../res/fonts/iconSvg";
 import Picker from 'react-native-picker';
-import {Slider  } from "react-native-elements";
+import { Slider } from "react-native-elements";
+import CityJson from "../../../../res/citys.json";
 class Index extends Component {
   // gender: "男",
   // distance: 2,
@@ -41,8 +42,52 @@ class Index extends Component {
     });
     Picker.show();
   }
+
+  // 选择居住地
+  chooeseCity = () => {
+    Picker.init({
+      pickerData: CityJson,
+      selectedValue: ["北京", "北京"],
+      wheelFlex: [1, 1, 0], // 显示省和市
+      pickerConfirmBtnText: "确定",
+      pickerCancelBtnText: "取消",
+      pickerTitleText: "选择城市",
+      onPickerConfirm: data => { 
+        // data =  [广东，广州，天河]
+        this.setState(
+          {
+            city: data[1]
+          }
+        );
+      }
+    });
+    Picker.show();
+  }
+
+
+  // 选择学历
+  chooeseEducation=()=>{
+    Picker.init({
+      pickerData: ["博士后","博士","硕士","本科","大专","高中","留学","其他"],
+      selectedValue: ["其他"],
+      wheelFlex: [1, 0, 0], // 显示省和市
+      pickerConfirmBtnText: "确定",
+      pickerCancelBtnText: "取消",
+      pickerTitleText: "选择学历",
+      onPickerConfirm: data => { 
+        // data =  [广东，广州，天河]
+        this.setState(
+          {
+            education: data[0]
+          }
+        );
+      }
+    });
+    Picker.show();
+  }
+
   render() {
-    const { gender, lastLogin, distance } = this.state;
+    const { gender, lastLogin, distance, city,education } = this.state;
     return (
       <View
         style={{
@@ -93,16 +138,28 @@ class Index extends Component {
         {/* 3.0 近期登录时间 结束 */}
         {/* 4.0 距离 开始 */}
         <View style={{ marginTop: pxToDp(10) }}>
-          <Text style={{ color: "#777", fontSize: pxToDp(18)}}>距离:{distance || 0} KM</Text>
-            <Slider
+          <Text style={{ color: "#777", fontSize: pxToDp(18) }}>距离:{distance || 0} KM</Text>
+          <Slider
             value={distance}
             minimumValue={0}
             maximumValue={10}
             step={0.5}
-            onValueChange={(distance)=>this.setState({ distance })}
-            />
+            onValueChange={(distance) => this.setState({ distance })}
+          />
         </View>
         {/* 4.0 距离 结束 */}
+        {/* 5.0 居住地 开始 */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: pxToDp(10) }}>
+          <Text style={{ color: "#777", fontSize: pxToDp(18), width: pxToDp(100) }}>居住地:</Text>
+          <Text onPress={this.chooeseCity} style={{ color: "#777", fontSize: pxToDp(18) }}>{city || "请选择"}</Text>
+        </View>
+        {/* 5.0 居住地 结束 */}
+        {/* 6.0 学历 开始 */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: pxToDp(10) }}>
+          <Text style={{ color: "#777", fontSize: pxToDp(18), width: pxToDp(80) }}>学历:</Text>
+          <Text onPress={this.chooeseEducation} style={{ color: "#777", fontSize: pxToDp(18) }}>{education || "请选择"}</Text>
+        </View>
+        {/* 6.0 学历 结束 */}
       </View>
     );
   }
