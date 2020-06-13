@@ -3,15 +3,18 @@ import { TouchableOpacity, View, Text, ImageBackground, StyleSheet, Image } from
 import THNav from "../../../components/THNav";
 import Swiper from "react-native-deck-swiper";
 import request from "../../../utils/request";
-import { FRIENDS_CARDS, BASE_URI } from "../../../utils/pathMap";
+import { FRIENDS_CARDS, BASE_URI ,FRIENDS_LIKE} from "../../../utils/pathMap";
 import IconFont from "../../../components/IconFont";
 import { pxToDp } from "../../../utils/stylesKits";
+import {Toast  } from "teaset";
 class Index extends Component {
   params = {
     page: 1,
     pagesize: 5
   }
   state = {
+    // 当前被操作的数组的索引
+    currentIndex:0,
     cards: [
       //       id: 8
       // header: "/upload/13828459782.png"
@@ -24,6 +27,10 @@ class Index extends Component {
     ]
   }
 
+  constructor() {
+    super();
+    this.swiperRef = React.createRef();
+  }
   componentDidMount() {
     this.getFriendsCards();
   }
@@ -34,8 +41,33 @@ class Index extends Component {
     this.setState({ cards: res.data });
 
   }
+
+  // 设置用户喜欢或者不喜欢
+  setLike = async(type) => {
+    /* 
+    1 如何通过js的方式来swiper滑动
+      swiper的Ref 来实现 获取到swiper的ref => swipeLeft()
+    2 根据滑动方向或者 参数 来构造数据 将他们发送到后台
+      1 先知道当前被操作的数组的元素-索引
+     */
+
+    //  this.swiperRef.swipeLeft();
+    //  this.swiperRef.swipeRight();
+    // console.log(this.state.currentIndex);
+    const id=this.state.cards[this.state.currentIndex].id;
+    const url=FRIENDS_LIKE.replace(":id",id).replace(":type",type);
+    const res=await request.privateGet(url);
+    
+    if(type==="dislike"){
+      this.swiperRef.swipeLeft()
+    }else{
+      this.swiperRef.swipeRight();
+    }
+    Toast.message(res.data,1000,"center");
+  }
+
   render() {
-    const { cards } = this.state;
+    const { cards,currentIndex } = this.state;
     if (cards.length === 0) {
       return <></>
     }
@@ -48,6 +80,7 @@ class Index extends Component {
           source={require("../../../res/testsoul_bg.png")}
         >
           <Swiper
+            ref={ref => this.swiperRef = ref}
             cards={cards}
             renderCard={(card) => {
               return (
@@ -75,9 +108,9 @@ class Index extends Component {
                 </View>
               )
             }}
-            onSwiped={(cardIndex) => { console.log(cardIndex) }}
+            onSwiped={(cardIndex) => { this.setState({ currentIndex: cardIndex }) }}
             onSwipedAll={() => { console.log('onSwipedAll') }}
-            cardIndex={0}
+            cardIndex={currentIndex}
             backgroundColor={'transparent'}
             cardVerticalMargin={0}
             stackSize={3}>
@@ -86,26 +119,31 @@ class Index extends Component {
 
         {/* 两个小图标 */}
         <View
-        style={{flexDirection:"row",
-        justifyContent:"space-between",
-        width:"60%",
-        alignSelf:"center",
-        marginTop:pxToDp(40)
-      }}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "60%",
+            alignSelf: "center",
+            marginTop: pxToDp(40)
+          }}
         >
           <TouchableOpacity
-          style={{backgroundColor:"#ebc869",width:pxToDp(60),
-          height:pxToDp(60),borderRadius:pxToDp(30),alignItems:"center",justifyContent:"center"
-        }}
+            onPress={this.setLike.bind(this,"dislike")}
+            style={{
+              backgroundColor: "#ebc869", width: pxToDp(60),
+              height: pxToDp(60), borderRadius: pxToDp(30), alignItems: "center", justifyContent: "center"
+            }}
           >
-            <IconFont style={{fontSize:pxToDp(30),color:"#fff"}} name="iconbuxihuan" />
+            <IconFont style={{ fontSize: pxToDp(30), color: "#fff" }} name="iconbuxihuan" />
           </TouchableOpacity>
           <TouchableOpacity
-          style={{backgroundColor:"#fd5213",width:pxToDp(60),
-          height:pxToDp(60),borderRadius:pxToDp(30),alignItems:"center",justifyContent:"center"
-        }}
+           onPress={this.setLike.bind(this,"like")}
+            style={{
+              backgroundColor: "#fd5213", width: pxToDp(60),
+              height: pxToDp(60), borderRadius: pxToDp(30), alignItems: "center", justifyContent: "center"
+            }}
           >
-            <IconFont style={{fontSize:pxToDp(30),color:"#fff"}} name="iconxihuan" />
+            <IconFont style={{ fontSize: pxToDp(30), color: "#fff" }} name="iconxihuan" />
           </TouchableOpacity>
         </View>
       </View>
