@@ -100,8 +100,9 @@ class Index extends Component {
           imageStyle={{ height: "100%" }}
           source={require("../../../res/testsoul_bg.png")}
         >
-          {cards[currentIndex]?<Swiper
+          {cards[currentIndex]?<Swiper  
             key={Date.now()}
+            
             ref={ref => this.swiperRef = ref}
             cards={cards}
             renderCard={(card) => {
