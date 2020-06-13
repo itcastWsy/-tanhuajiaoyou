@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import THNav from "../../../components/THNav";
 class Index extends Component {
   render() {
     return (
-      <View><Text>探花</Text></View>
+      <View>
+        <THNav title="探花"/>
+      </View>
     );
   }
 }
