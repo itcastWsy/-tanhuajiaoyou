@@ -8,6 +8,8 @@ import PerfectGirl from "./components/PerfectGirl";
 import request from "../../../utils/request";
 import { FRIENDS_RECOMMEND, BASE_URI } from "../../../utils/pathMap";
 import IconFont from "../../../components/IconFont";
+import {Overlay  } from "teaset";
+import FilterPanel from "./components/FilterPanel";
 // id: 7
 // header: "/upload/18665711978.png"
 // nick_name: "一叶知秋"
@@ -43,6 +45,23 @@ class Index extends Component {
     const res = await request.privateGet(FRIENDS_RECOMMEND, this.state.params);
     this.setState({ recommends: res.data });
   }
+  // 点击事件 显示 筛选浮层
+  recommendFilterShow=()=>{
+    // 获取需要传递的参数
+    const {page,pagesize,...others}=this.state.params;
+    let overlayViewRef=null;
+    let overlayView = (
+      <Overlay.View
+        modal={true}
+        overlayOpacity={0.3}
+        ref={v => overlayViewRef = v}
+        >
+          {/* 显示 筛选组件 */}
+          <FilterPanel params={others} />
+      </Overlay.View>
+    );
+    Overlay.show(overlayView);
+  }
   render() {
     const { recommends } = this.state;
     return (
@@ -72,7 +91,7 @@ class Index extends Component {
               alignItems: "center"
             }}>
               <Text style={{ color: "#666" }}>推荐</Text>
-              <IconFont style={{ color: "#666" }} name="iconshaixuan" />
+              <IconFont onPress={this.recommendFilterShow} style={{ color: "#666" }} name="iconshaixuan" />
             </View>
             {/* 2.1 标题 结束 */}
             {/* 2.2 列表内容 开始 */}
