@@ -3,18 +3,20 @@ import { TouchableOpacity, View, Text, ImageBackground, StyleSheet, Image } from
 import THNav from "../../../components/THNav";
 import Swiper from "react-native-deck-swiper";
 import request from "../../../utils/request";
-import { FRIENDS_CARDS, BASE_URI ,FRIENDS_LIKE} from "../../../utils/pathMap";
+import { FRIENDS_CARDS, BASE_URI, FRIENDS_LIKE } from "../../../utils/pathMap";
 import IconFont from "../../../components/IconFont";
 import { pxToDp } from "../../../utils/stylesKits";
-import {Toast  } from "teaset";
+import { Toast } from "teaset";
 class Index extends Component {
   params = {
     page: 1,
     pagesize: 5
   }
+  // 总页数
+  totalPages = 5;
   state = {
     // 当前被操作的数组的索引
-    currentIndex:0,
+    currentIndex: 0,
     cards: [
       //       id: 8
       // header: "/upload/13828459782.png"
@@ -38,12 +40,12 @@ class Index extends Component {
   // 获取要渲染的数据
   getFriendsCards = async () => {
     const res = await request.privateGet(FRIENDS_CARDS, this.params);
-    this.setState({ cards: res.data });
-
+    this.totalPages = res.pages;
+    this.setState({ cards: [...this.state.cards, ...res.data] });
   }
 
   // 设置用户喜欢或者不喜欢
-  setLike = async(type) => {
+  setLike = async (type) => {
     /* 
     1 如何通过js的方式来swiper滑动
       swiper的Ref 来实现 获取到swiper的ref => swipeLeft()
@@ -55,26 +57,41 @@ class Index extends Component {
     //  this.swiperRef.swipeRight();
     // console.log(this.state.currentIndex);
     this.sendLike(type);
-    if(type==="dislike"){
+    if (type === "dislike") {
       this.swiperRef.swipeLeft()
-    }else{
+    } else {
       this.swiperRef.swipeRight();
     }
   }
 
 
   // 发送喜欢或者不喜欢
-  sendLike=async(type)=>{
-    const id=this.state.cards[this.state.currentIndex].id;
-    const url=FRIENDS_LIKE.replace(":id",id).replace(":type",type);
-    const res=await request.privateGet(url);
-    Toast.message(res.data,1000,"center");
+  sendLike = async (type) => {
+    const id = this.state.cards[this.state.currentIndex].id;
+    const url = FRIENDS_LIKE.replace(":id", id).replace(":type", type);
+    const res = await request.privateGet(url);
+    Toast.message(res.data, 1000, "center");
+  }
+
+  // 图片滑动完毕就会触发
+  onSwipedAll = () => {
+    /* 
+    1 一定有下一页的数据 ?
+    2 简单的判断即可
+     */
+    if (this.params.page >= this.totalPages) {
+      Toast.message("没有下一页数据", 1000, "center")
+      return;
+    } else {
+      this.params.page++;
+      this.getFriendsCards();
+    }
   }
   render() {
-    const { cards,currentIndex } = this.state;
-    if (cards.length === 0) {
-      return <></>
-    }
+    const { cards, currentIndex } = this.state;
+    // if (!cards[currentIndex]) {
+    //   return <></>
+    // }
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="探花" />
@@ -83,7 +100,8 @@ class Index extends Component {
           imageStyle={{ height: "100%" }}
           source={require("../../../res/testsoul_bg.png")}
         >
-          <Swiper
+          {cards[currentIndex]?<Swiper
+            key={Date.now()}
             ref={ref => this.swiperRef = ref}
             cards={cards}
             renderCard={(card) => {
@@ -112,15 +130,15 @@ class Index extends Component {
                 </View>
               )
             }}
-            onSwiped={(cardIndex) => { this.setState({ currentIndex: cardIndex }) }}
-            onSwipedAll={() => { console.log('onSwipedAll') }}
-            onSwipedLeft={this.sendLike.bind(this,"dislike")}
-            onSwipedRight={this.sendLike.bind(this,"like")}
+            onSwiped={() => { this.setState({ currentIndex:this.state.currentIndex+1  }) }}
+            onSwipedAll={this.onSwipedAll}
+            onSwipedLeft={this.sendLike.bind(this, "dislike")}
+            onSwipedRight={this.sendLike.bind(this, "like")}
             cardIndex={currentIndex}
             backgroundColor={'transparent'}
             cardVerticalMargin={0}
             stackSize={3}>
-          </Swiper>
+          </Swiper>:<></>}
         </ImageBackground>
 
         {/* 两个小图标 */}
@@ -134,7 +152,7 @@ class Index extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={this.setLike.bind(this,"dislike")}
+            onPress={this.setLike.bind(this, "dislike")}
             style={{
               backgroundColor: "#ebc869", width: pxToDp(60),
               height: pxToDp(60), borderRadius: pxToDp(30), alignItems: "center", justifyContent: "center"
@@ -143,7 +161,7 @@ class Index extends Component {
             <IconFont style={{ fontSize: pxToDp(30), color: "#fff" }} name="iconbuxihuan" />
           </TouchableOpacity>
           <TouchableOpacity
-           onPress={this.setLike.bind(this,"like")}
+            onPress={this.setLike.bind(this, "like")}
             style={{
               backgroundColor: "#fd5213", width: pxToDp(60),
               height: pxToDp(60), borderRadius: pxToDp(30), alignItems: "center", justifyContent: "center"
