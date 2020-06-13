@@ -41,8 +41,8 @@ class Index extends Component {
   }
 
   // 获取推荐朋友
-  getRecommends = async () => {
-    const res = await request.privateGet(FRIENDS_RECOMMEND, this.state.params);
+  getRecommends = async (filterParams={}) => {
+    const res = await request.privateGet(FRIENDS_RECOMMEND, {...this.state.params,...filterParams});
     this.setState({ recommends: res.data });
   }
   // 点击事件 显示 筛选浮层
@@ -57,10 +57,16 @@ class Index extends Component {
         ref={v => overlayViewRef = v}
         >
           {/* 显示 筛选组件 */}
-          <FilterPanel params={others} onClose={()=>overlayViewRef.close()} />
+          <FilterPanel onSubmitFilter={this.handleSubmitFilter}  params={others} onClose={()=>overlayViewRef.close()} />
       </Overlay.View>
     );
     Overlay.show(overlayView);
+  }
+
+  // 接收到了筛选组件传递过来的数据
+  handleSubmitFilter=(filterParams)=>{
+    // 接收到的 filterParams  和 旧 的params做一个对象合并
+   this.getRecommends(filterParams);
   }
   render() {
     const { recommends } = this.state;

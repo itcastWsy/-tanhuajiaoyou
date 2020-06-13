@@ -7,6 +7,7 @@ import { male, female } from "../../../../res/fonts/iconSvg";
 import Picker from 'react-native-picker';
 import { Slider } from "react-native-elements";
 import CityJson from "../../../../res/citys.json";
+import THButton from "../../../../components/THButton";
 class Index extends Component {
   // gender: "男",
   // distance: 2,
@@ -86,6 +87,11 @@ class Index extends Component {
     Picker.show();
   }
 
+  // 点击确定 要执行的方法
+  handleSubmitFilter=()=>{
+    this.props.onSubmitFilter(this.state);
+    this.props.onClose();
+  }
   render() {
     const { gender, lastLogin, distance, city,education } = this.state;
     return (
@@ -160,6 +166,10 @@ class Index extends Component {
           <Text onPress={this.chooeseEducation} style={{ color: "#777", fontSize: pxToDp(18) }}>{education || "请选择"}</Text>
         </View>
         {/* 6.0 学历 结束 */}
+
+        <THButton 
+        onPress={this.handleSubmitFilter}
+        style={{width:"100%",height:pxToDp(40),marginTop:pxToDp(10)}}>确认</THButton>
       </View>
     );
   }
