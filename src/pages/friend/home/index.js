@@ -49,7 +49,7 @@ class Index extends Component {
   recommendFilterShow=()=>{
     // 获取需要传递的参数
     const {page,pagesize,...others}=this.state.params;
-    let overlayViewRef=null;
+    let overlayViewRef=null;// overlayViewRef.close()
     let overlayView = (
       <Overlay.View
         modal={true}
@@ -57,7 +57,7 @@ class Index extends Component {
         ref={v => overlayViewRef = v}
         >
           {/* 显示 筛选组件 */}
-          <FilterPanel params={others} />
+          <FilterPanel params={others} onClose={()=>overlayViewRef.close()} />
       </Overlay.View>
     );
     Overlay.show(overlayView);
