@@ -54,18 +54,22 @@ class Index extends Component {
     //  this.swiperRef.swipeLeft();
     //  this.swiperRef.swipeRight();
     // console.log(this.state.currentIndex);
-    const id=this.state.cards[this.state.currentIndex].id;
-    const url=FRIENDS_LIKE.replace(":id",id).replace(":type",type);
-    const res=await request.privateGet(url);
-    
+    this.sendLike(type);
     if(type==="dislike"){
       this.swiperRef.swipeLeft()
     }else{
       this.swiperRef.swipeRight();
     }
-    Toast.message(res.data,1000,"center");
   }
 
+
+  // 发送喜欢或者不喜欢
+  sendLike=async(type)=>{
+    const id=this.state.cards[this.state.currentIndex].id;
+    const url=FRIENDS_LIKE.replace(":id",id).replace(":type",type);
+    const res=await request.privateGet(url);
+    Toast.message(res.data,1000,"center");
+  }
   render() {
     const { cards,currentIndex } = this.state;
     if (cards.length === 0) {
@@ -110,6 +114,8 @@ class Index extends Component {
             }}
             onSwiped={(cardIndex) => { this.setState({ currentIndex: cardIndex }) }}
             onSwipedAll={() => { console.log('onSwipedAll') }}
+            onSwipedLeft={this.sendLike.bind(this,"dislike")}
+            onSwipedRight={this.sendLike.bind(this,"like")}
             cardIndex={currentIndex}
             backgroundColor={'transparent'}
             cardVerticalMargin={0}
