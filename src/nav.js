@@ -6,6 +6,7 @@ import Login from "./pages/account/login";
 import Demo from "./pages/Demo";
 import UserInfo from "./pages/account/userinfo";
 import Tabbar from "./tabbar";
+import TanHua from "./pages/friend/tanhua";
 import {inject,observer  } from "mobx-react";
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ class Nav extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+          <Stack.Screen name="TanHua" component={TanHua} />
           <Stack.Screen name="Tabbar" component={Tabbar} />
           <Stack.Screen name="UserInfo" component={UserInfo} />
           <Stack.Screen name="Demo" component={Demo} />

@@ -3,11 +3,18 @@ import { View, Text,TouchableOpacity } from 'react-native';
 import Svg from "react-native-svg-uri";
 import {tanhua,near,testSoul  } from "../../../../res/fonts/iconSvg";
 import { pxToDp } from '../../../../utils/stylesKits';
+import { NavigationContext } from "@react-navigation/native";
 class Index extends Component {
+  static contextType=NavigationContext;
+  goPage=()=>{
+    // this.context === this.props.navigation
+    this.context.navigate("TanHua");
+  }
   render() {
     return (
       <View style={{flexDirection:"row",width:"80%",justifyContent:"space-around"}} >
         <TouchableOpacity
+        onPress={()=>this.goPage("TanHua")}
         style={{alignItems:"center"}}
         >
           <View style={{width:pxToDp(70),height:pxToDp(70),borderRadius:pxToDp(35),
