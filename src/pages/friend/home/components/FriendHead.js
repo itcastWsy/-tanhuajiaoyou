@@ -37,6 +37,7 @@ class Index extends Component {
         </TouchableOpacity>
         <TouchableOpacity
         style={{alignItems:"center"}}
+        onPress={()=>this.goPage("TestSoul")}
         >
           <View style={{width:pxToDp(70),height:pxToDp(70),borderRadius:pxToDp(35),
           backgroundColor:"#ecc768",justifyContent:"center",alignItems:"center"
