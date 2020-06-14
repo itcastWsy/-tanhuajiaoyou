@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text,Image, StatusBar, ImageBackground, TouchableOpacity } from 'react-native';
 import request from "../../../utils/request";
 import { FRIENDS_SEARCH,BASE_URI } from "../../../utils/pathMap";
-import { pxToDp } from "../../../utils/stylesKits";
+import { pxToDp, screenWidth, screenHeight } from "../../../utils/stylesKits";
 class Index extends Component {
   params = {
     gender: "男",
@@ -65,9 +65,12 @@ class Index extends Component {
         <StatusBar backgroundColor={"transparent"} translucent={true} />
         {
           list.map((v, i) => {
-            const whMap = this.WHMap[this.getWidthHeight(v.dist)]
+            const whMap = this.WHMap[this.getWidthHeight(v.dist)];
+            const tx=Math.random()*(screenWidth-whMap.width);
+            const ty=Math.random()*(screenHeight-whMap.height);
             return <TouchableOpacity
               key={i}
+              style={{position:"absolute",left:tx,top:ty}}  
             >
               <ImageBackground
                 source={require("../../../res/showfirend.png")}
@@ -75,6 +78,7 @@ class Index extends Component {
                 style={{ ...whMap,position:"relative",alignItems:"center" }}
               >
                 <Text
+                numberOfLines={1}
                 style={{color:"#ffffff9a",position:"absolute",top:-pxToDp(20)}}
                 >{v.nick_name}</Text>
                 <Image style={{width:whMap.width,height:whMap.width,
