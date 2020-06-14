@@ -55,7 +55,6 @@ class Index extends Component {
   // 获取附近的数据
   getList = async () => {
     const res = await request.privateGet(FRIENDS_SEARCH, this.params);
-    console.log(res);
     this.setState({ list: res.data });
   }
 
@@ -76,7 +75,10 @@ class Index extends Component {
     Overlay.show(overlayView);
   }
   // 获取了筛选结果
-  handleSubmitFilter=(filterParams)=>{}
+  handleSubmitFilter=(filterParams)=>{
+    this.params=filterParams;
+    this.getList();
+  }
   render() {
     const { list } = this.state;
     return (

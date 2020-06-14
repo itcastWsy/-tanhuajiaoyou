@@ -17,6 +17,9 @@ class Index extends Component {
 
   // 选择性别
   chooeseGender = (gender) => {
+    if(gender===this.state.gender){
+      gender="";
+    }
     this.setState({ gender });
   }
   
