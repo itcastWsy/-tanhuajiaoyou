@@ -6,9 +6,9 @@ import { pxToDp } from '../../../../utils/stylesKits';
 import { NavigationContext } from "@react-navigation/native";
 class Index extends Component {
   static contextType=NavigationContext;
-  goPage=()=>{
+  goPage=(page)=>{
     // this.context === this.props.navigation
-    this.context.navigate("TanHua");
+    this.context.navigate(page);
   }
   render() {
     return (
@@ -26,6 +26,7 @@ class Index extends Component {
         </TouchableOpacity>
         <TouchableOpacity
         style={{alignItems:"center"}}
+        onPress={()=>this.goPage("Search")}
         >
           <View style={{width:pxToDp(70),height:pxToDp(70),borderRadius:pxToDp(35),
           backgroundColor:"#2db3f8",justifyContent:"center",alignItems:"center"
