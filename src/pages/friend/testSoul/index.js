@@ -1,19 +1,81 @@
 import React, { Component } from 'react';
-import { View, Text ,ImageBackground} from 'react-native';
+import { View, Text, ImageBackground, Image, StyleSheet } from 'react-native';
 import THNav from "../../../components/THNav";
+import request from "../../../utils/request";
+import { FRIENDS_QUESTIONS, BASE_URI } from "../../../utils/pathMap";
+import Swiper from "react-native-deck-swiper";
+import THButton from "../../../components/THButton";
+import { pxToDp } from '../../../utils/stylesKits';
+// qid: 1
+// type: "初级"
+// title: "初级灵魂题"
+// star: 2
+// imgpath: "/upload/questions/1.png"
+// status: 0
+// count: 3
+// sort_no: 1
+// istested: true
+// islock: false
 class Index extends Component {
+  state = {
+    questions: []
+  }
+  componentDidMount() {
+    this.getList();
+  }
+  // 获取问卷列表数据
+  getList = async () => {
+    const res = await request.privateGet(FRIENDS_QUESTIONS);
+    this.setState({ questions: res.data });
+  }
   render() {
+    const { questions } = this.state;
     return (
-      <View style={{flex:1,backgroundColor:"#fff"}}>
+      <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="测灵魂" />
         <ImageBackground
-        source={require("../../../res/testsoul_bg.png")}
-        style={{width:"100%",height:"60%"}}
-        imageStyle={{height:"100%"}}
+          source={require("../../../res/testsoul_bg.png")}
+          style={{ width: "100%", height: "60%" }}
+          imageStyle={{ height: "100%" }}
 
-        ></ImageBackground>
+        >
+          {questions.length ? <Swiper
+            cards={questions}
+            renderCard={(card) => {
+              return (
+                <View style={styles.card}>
+                  <Image style={{ width: "100%", height: "100%" }} source={{ uri: BASE_URI + card.imgpath }} />
+                </View>
+              )
+            }}
+            onSwiped={(cardIndex) => { console.log(cardIndex) }}
+            onSwipedAll={() => { console.log('onSwipedAll') }}
+            cardIndex={0}
+            cardVerticalMargin={0}
+            backgroundColor={'transparent'}
+            stackSize={1}>
+          </Swiper> : <></>}
+
+        </ImageBackground>
+
+        <THButton style={{position:"absolute",
+        width:"80%",height:pxToDp(40),bottom:pxToDp(20),
+        alignSelf:"center"
+        
+      }} >开始测试</THButton>
+
       </View>
     );
   }
 }
+const styles = StyleSheet.create({
+  card: {
+    height: "80%",
+    borderRadius: 4,
+
+    borderColor: "#E8E8E8",
+    justifyContent: "center",
+    backgroundColor: "white"
+  }
+});
 export default Index;
