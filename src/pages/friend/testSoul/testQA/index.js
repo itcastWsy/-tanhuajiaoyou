@@ -4,6 +4,7 @@ import request from "../../../../utils/request";
 import { FRIENDS_QUESTIONSECTION } from "../../../../utils/pathMap";
 import THNav from "../../../../components/THNav";
 import { pxToDp } from '../../../../utils/stylesKits';
+import { inject, observer } from 'mobx-react';
 // qid: 1
 // type: "初级"
 // title: "初级灵魂题"
@@ -14,6 +15,9 @@ import { pxToDp } from '../../../../utils/stylesKits';
 // sort_no: 1
 // istested: true
 // islock: false
+
+@inject("UserStore")
+@observer
 class Index extends Component {
   titles={
     "初级":require("../../../../res/leve1.png"),
@@ -44,6 +48,10 @@ class Index extends Component {
   }
   componentDidMount() {
     this.getList();
+    console.log("=============");
+    console.log(this.props.UserStore.user);
+    console.log("=============");
+
   }
   // 获取测试题问卷
   getList = async () => {

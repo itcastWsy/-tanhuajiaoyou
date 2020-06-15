@@ -7,7 +7,19 @@ import Friend from "./pages/friend/home";
 import Group from "./pages/group/home";
 import Message from "./pages/message/home";
 import My from "./pages/my/home";
+import request from "./utils/request";
+import { MY_INFO } from "./utils/pathMap";
+import { inject, observer } from 'mobx-react';
+@inject("UserStore")
+@observer
 class Index extends Component {
+ async componentDidMount() {
+    // 1 发送请求获取当前的用户信息
+    const res=await request.privateGet(MY_INFO);
+    // console.log(res);
+    // 2 用户信息 存入到mobx中 
+    this.props.UserStore.setUser(res.data);
+  }
   state = {
     selectedTab: "friend",
     pages: [
