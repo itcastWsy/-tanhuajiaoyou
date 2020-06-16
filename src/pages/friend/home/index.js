@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image } from 'react-native';
+import { View, Text, StatusBar, Image,TouchableOpacity } from 'react-native';
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import { pxToDp } from '../../../utils/stylesKits';
 import FriendHead from "./components/FriendHead";
@@ -10,6 +10,7 @@ import { FRIENDS_RECOMMEND, BASE_URI } from "../../../utils/pathMap";
 import IconFont from "../../../components/IconFont";
 import {Overlay  } from "teaset";
 import FilterPanel from "./components/FilterPanel";
+import { NavigationContext } from "@react-navigation/native";
 // id: 7
 // header: "/upload/18665711978.png"
 // nick_name: "一叶知秋"
@@ -21,6 +22,7 @@ import FilterPanel from "./components/FilterPanel";
 // agediff: 0
 // fateValue: 40
 class Index extends Component {
+  static contextType=NavigationContext;
   state = {
     // 接口要的数据
     params: {
@@ -102,7 +104,8 @@ class Index extends Component {
             {/* 2.1 标题 结束 */}
             {/* 2.2 列表内容 开始 */}
             <View>
-              {recommends.map((v, i) => <View key={i}
+              {recommends.map((v, i) => <TouchableOpacity key={i}
+              onPress={()=>this.context.navigate("Detail",{id:v.id})}
                 style={{
                   flexDirection: "row", paddingTop: pxToDp(15),
                   paddingBottom: pxToDp(15), borderBottomWidth: pxToDp(1), borderColor: "#ccc"
@@ -139,7 +142,7 @@ class Index extends Component {
                   <IconFont name="iconxihuan" style={{color:"red",fontSize:pxToDp(30)}} />
                   <Text style={{color:"#666"}} >{v.fateValue}</Text>
                 </View>
-              </View>)}
+              </TouchableOpacity>)}
             </View>
             {/* 2.2 列表内容 结束 */}
           </View>

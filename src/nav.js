@@ -11,6 +11,7 @@ import Search from "./pages/friend/search";
 import TestSoul from "./pages/friend/testSoul";
 import TestQA from "./pages/friend/testSoul/testQA";
 import TestResult from "./pages/friend/testSoul/testResult";
+import Detail from "./pages/friend/detail";
 import {inject,observer  } from "mobx-react";
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ class Nav extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+          <Stack.Screen name="Detail" component={Detail} />
           <Stack.Screen name="TestResult" component={TestResult} />
           <Stack.Screen name="TestQA" component={TestQA} />
           <Stack.Screen name="TestSoul" component={TestSoul} />
