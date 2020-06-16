@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image ,TouchableOpacity} from 'react-native';
 import request from "../../../utils/request";
 import { FRIENDS_PERSONALINFO, BASE_URI } from "../../../utils/pathMap";
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
@@ -7,6 +7,7 @@ import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import { Carousel } from "teaset";
 import { pxToDp } from "../../../utils/stylesKits";
 import IconFont from "../../../components/IconFont";
+import LinearGradient from "react-native-linear-gradient";
 
 class Index extends Component {
   state = {
@@ -44,22 +45,22 @@ class Index extends Component {
           </Carousel>
         )}
       >
-        <View >
+        <View style={{backgroundColor:"#fff"}} >
           {/* 1.0 用户个人信息 开始 */}
-          <View style={{  flexDirection: "row",padding:pxToDp(5),borderBottomWidth:pxToDp(1),borderColor:"#ccc" }}>
+          <View style={{ flexDirection: "row", padding: pxToDp(5), borderBottomWidth: pxToDp(1), borderColor: "#ccc" }}>
             <View style={{ flex: 2, justifyContent: "space-around" }} >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{ color: "#555" }} >{userDetail.nick_name}</Text>
-                <IconFont style={{ marginLeft:pxToDp(5),marginRight:pxToDp(5),  fontSize: pxToDp(18), color: userDetail.gender === "女" ? "#b564bf" : "red" }}
+                <IconFont style={{ marginLeft: pxToDp(5), marginRight: pxToDp(5), fontSize: pxToDp(18), color: userDetail.gender === "女" ? "#b564bf" : "red" }}
                   name={userDetail.gender === "女" ? "icontanhuanv" : "icontanhuanan"} />
                 <Text style={{ color: "#555" }} >{userDetail.age}岁</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#555",marginRight:pxToDp(5) }} >{userDetail.marry}</Text>
-                <Text style={{ color: "#555",marginRight:pxToDp(5) }} >|</Text>
-                <Text style={{ color: "#555",marginRight:pxToDp(5) }} >{userDetail.xueli}</Text>
-                <Text style={{ color: "#555",marginRight:pxToDp(5) }} >|</Text>
-                <Text style={{ color: "#555",marginRight:pxToDp(5) }} >{userDetail.agediff < 10 ? "年龄相仿" : "有点代沟"}</Text>
+                <Text style={{ color: "#555", marginRight: pxToDp(5) }} >{userDetail.marry}</Text>
+                <Text style={{ color: "#555", marginRight: pxToDp(5) }} >|</Text>
+                <Text style={{ color: "#555", marginRight: pxToDp(5) }} >{userDetail.xueli}</Text>
+                <Text style={{ color: "#555", marginRight: pxToDp(5) }} >|</Text>
+                <Text style={{ color: "#555", marginRight: pxToDp(5) }} >{userDetail.agediff < 10 ? "年龄相仿" : "有点代沟"}</Text>
               </View>
             </View>
             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -71,6 +72,58 @@ class Index extends Component {
             </View>
           </View>
           {/* 1.0 用户个人信息 结束 */}
+          {/* 2.0 动态 开始 */}
+          <View>
+            {/* 2.1 标题 开始 */}
+            <View style={{  padding: pxToDp(10), flexDirection: "row", justifyContent: 'space-between', borderBottomWidth: pxToDp(1), borderColor: "#ccc" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{ color: "#666" }} >动态</Text>
+                <View style={{
+                  backgroundColor: "red", width: pxToDp(16), height: pxToDp(16),
+                  borderRadius: pxToDp(8), alignItems: "center", justifyContent: 'center',
+                  marginLeft: pxToDp(5)
+                }} >
+                  <Text style={{ color: "#fff" }} >3</Text>
+                </View>
+              </View>
+              <View style={{flexDirection:"row"}}>
+              <TouchableOpacity
+              style={{marginRight:pxToDp(8)}}
+              >
+                <LinearGradient
+                colors={["#f2ab5a","#ec7c50"]}
+                start={{x:0,y:0}}
+                end={{x:1,y:0}}
+                style={{
+                  width:pxToDp(100),height:pxToDp(30),borderRadius:pxToDp(15),
+                  flexDirection:"row",alignItems:'center',justifyContent:"space-evenly"
+                }}
+                >
+                  <IconFont style={{color:"#fff"}} name="iconliaotian" ></IconFont>
+                  <Text style={{color:"#fff"}}>聊一下</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+              style={{marginRight:pxToDp(8)}}
+              >
+                <LinearGradient
+                colors={["#6d47f8","#e56b7f"]}
+                start={{x:0,y:0}}
+                end={{x:1,y:0}}
+                style={{
+                  width:pxToDp(100),height:pxToDp(30),borderRadius:pxToDp(15),
+                  flexDirection:"row",alignItems:'center',justifyContent:"space-evenly"
+                }}
+                >
+                  <IconFont style={{color:"#fff"}} name="iconxihuan-o" ></IconFont>
+                  <Text style={{color:"#fff"}}>喜欢</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              </View>
+            </View>
+            {/* 2.1 标题 结束 */}
+          </View>
+          {/* 2.0 动态 结束 */}
         </View>
       </HeaderImageScrollView>
     );
