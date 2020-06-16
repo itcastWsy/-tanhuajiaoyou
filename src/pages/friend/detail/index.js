@@ -12,6 +12,8 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 class Index extends Component {
   state = {
     userDetail: {},
+    // 当前用户的动态数组
+    trends:[],
     // 控制 图片放大组件 是否显示
     showAlbum: false,
     // 放大显示的图片的索引
@@ -21,8 +23,12 @@ class Index extends Component {
   }
   params = {
     page: 1,
-    pagesize: 5
+    pagesize: 10
   }
+  // 总页数
+  totalPages=1;
+  // 当前是否有请求在发送中
+  isLoading=false;
 
   componentDidMount() {
     this.getDetail();
@@ -32,25 +38,52 @@ class Index extends Component {
   getDetail = async () => {
     const url = FRIENDS_PERSONALINFO.replace(":id", this.props.route.params.id);
     const res = await request.privateGet(url, this.params);
-    this.setState({ userDetail: res.data });
+    this.totalPages=res.pages;
+    this.isLoading=false;
+    this.setState({ userDetail: res.data,trends:[...this.state.trends,...res.data.trends] });
   }
 
 
   // 点击 显示相册大图
-  handleShowAlbum=(i,ii)=>{
-    const imgUrls=this.state.userDetail.trends[i].album.map(v=>({url:BASE_URI+v.thum_img_path}));
-    const currentIndex=ii;
-    const showAlbum=true;
-    this.setState({ imgUrls,currentIndex,showAlbum  });
+  handleShowAlbum = (i, ii) => {
+    const imgUrls = this.state.userDetail.trends[i].album.map(v => ({ url: BASE_URI + v.thum_img_path }));
+    const currentIndex = ii;
+    const showAlbum = true;
+    this.setState({ imgUrls, currentIndex, showAlbum });
+    
+  }
+
+
+  // 列表滚动事件
+  onScroll = ({nativeEvent}) => {
+    // 1. `nativeEvent.contentSize.height`  列表内容的高度
+    // 2. `nativeEvent.layoutMeasurement.height` 可视区域的高度
+    // 3. `nativeEvent.contentOffset.y` 滚动条距离顶部的高度 
+
+    // console.log("列表内容的高度",nativeEvent.contentSize.height);
+    // console.log("可视区域的高度",nativeEvent.layoutMeasurement.height);
+    // console.log("滚动条距离顶部的高度",nativeEvent.contentOffset.y);
+
+    // console.log(nativeEvent.contentSize.height-nativeEvent.layoutMeasurement.height-nativeEvent.contentOffset.y);
+    // 滚动条触底
+    const isReachBottom=nativeEvent.contentSize.height-nativeEvent.layoutMeasurement.height-nativeEvent.contentOffset.y<10;
+    // 还有没有下一页数据
+    const hasMore=this.params.page<this.totalPages;
+    if(isReachBottom&&hasMore&&! this.isLoading){
+      this.isLoading=true;
+      this.params.page++;
+      this.getDetail();
+    }
 
   }
 
   render() {
     // console.log(this.props.route.params);
-    const { userDetail,imgUrls,currentIndex,showAlbum  } = this.state;
+    const { userDetail, imgUrls, currentIndex, showAlbum,trends } = this.state;
     if (!userDetail.silder) return <></>
     return (
       <HeaderImageScrollView
+        onScroll={this.onScroll}
         maxHeight={pxToDp(220)}
         minHeight={pxToDp(40)}
         renderForeground={() => (
@@ -142,7 +175,7 @@ class Index extends Component {
             {/* 2.2 列表 开始 */}
             <View>
               {
-                userDetail.trends.map((v, i) => <View
+                trends.map((v, i) => <View
                   key={i}
                   style={{ padding: pxToDp(10), borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1) }}
                 >
@@ -181,10 +214,10 @@ class Index extends Component {
                   {/* 2.4 相册 开始 */}
                   <View style={{ flexWrap: "wrap", flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
                     {v.album.map((vv, ii) => <TouchableOpacity
-                    onPress={()=>this.handleShowAlbum(i,ii)}
+                      onPress={() => this.handleShowAlbum(i, ii)}
                       key={ii}><Image
-                      style={{ width: pxToDp(70), height: pxToDp(70), marginRight: pxToDp(5) }}
-                      source={{ uri: BASE_URI + vv.thum_img_path }} />
+                        style={{ width: pxToDp(70), height: pxToDp(70), marginRight: pxToDp(5) }}
+                        source={{ uri: BASE_URI + vv.thum_img_path }} />
                     </TouchableOpacity>
                     )}
                   </View>
@@ -193,13 +226,15 @@ class Index extends Component {
               }
             </View>
             {/* 2.2 列表 结束 */}
+
+         {this.params.page>=this.totalPages?<View style={{height:pxToDp(80),alignItems:"center",justifyContent:"center"}} ><Text style={{color:"#666"}} >没有更多数据了</Text></View>:<></>}
           </View>
           {/* 2.0 动态 结束 */}
 
           <Modal visible={showAlbum} transparent={true}>
-            <ImageViewer 
-            onClick={()=>this.setState({ showAlbum:false  })}
-            imageUrls={imgUrls} index={currentIndex} />
+            <ImageViewer
+              onClick={() => this.setState({ showAlbum: false })}
+              imageUrls={imgUrls} index={currentIndex} />
           </Modal>
         </View>
       </HeaderImageScrollView>
