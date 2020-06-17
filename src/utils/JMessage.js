@@ -46,8 +46,23 @@ export default {
       },
         resolve, reject)
     })
-
+  },
+  /**
+   * 获取历史消息
+   * @param {String} username 要获取和谁的聊天记录
+   * @param {Number} from 从第几条开始获取
+   * @param {Number} limit 一共要获取几条
+   */
+  getHistoryMessages(username, from, limit) {
+    return new Promise((resolve, reject) => {
+      JMessage.getHistoryMessages({
+        type: 'single', username,
+        from, limit
+      },
+        resolve, reject)
+    })
   }
+
 
 
 }

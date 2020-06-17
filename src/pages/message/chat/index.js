@@ -7,6 +7,7 @@ const RNFS = require('react-native-fs')
 
 // 聊天的ui库
 import IMUI from 'aurora-imui-react-native'
+import JMessage from '../../../utils/JMessage';
 // 聊天ui库中输入组件
 const InputView = IMUI.ChatInput;
 // 消息展示列表
@@ -136,7 +137,7 @@ export default class TestRNIMUI extends Component {
       isAllowPullToRefresh: true,
       navigationBar: {},
     }
-    
+
 
     this.updateLayout = this.updateLayout.bind(this);
     this.onMsgClick = this.onMsgClick.bind(this);
@@ -159,14 +160,25 @@ export default class TestRNIMUI extends Component {
   messageListDidLoadEvent() {
     this.getHistoryMessage()
   }
-  
+
   // 获取历史消息
-  getHistoryMessage() {
+  getHistoryMessage=async()=> {
+    // 1 获取极光的历史消息
+    const username = this.props.route.params.guid;
+    // 2 from = 1
+    const from = 1;
+    // 3 limit = 1000
+    const limit = 1000;
+    const historys = await JMessage.getHistoryMessages(username,from,limit);
+    console.log("-------------------------------------");
+    console.log(historys);
+    console.log("-------------------------------------");
+
     var messages = []
     for (var index in imageUrlArray) {
       var message = constructNormalMessage()
       message.fromUser.avatarUrl = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534926548887&di=f107f4f8bd50fada6c5770ef27535277&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F11%2F67%2F23%2F69i58PICP37.jpg",//1
-      message.msgType = 'image'
+        message.msgType = 'image'
       message.mediaPath = imageUrlArray[index]
       message.contentSize = { 'height': 100, 'width': 200 }
       message.extras = { "extras": "fdfsf" }
@@ -446,7 +458,7 @@ export default class TestRNIMUI extends Component {
         inputViewLayout: { flex: 1, width: window.width, height: window.height },
         navigationBar: { height: 0 }
       })
-    } 
+    }
   }
 
   render() {
@@ -549,7 +561,7 @@ export default class TestRNIMUI extends Component {
           customLayoutItems={{
             left: [],
             right: ['send'],
-            bottom: ['voice','gallery','emoji','camera']
+            bottom: ['voice', 'gallery', 'emoji', 'camera']
           }}
         />
       </View>
