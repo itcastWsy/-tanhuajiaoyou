@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 
 import { StyleSheet, View, Alert, Dimensions, Button, Platform, } from 'react-native'
-
+import { BASE_URI } from "../../../utils/pathMap";
 // 文件操作库
-const RNFS = require('react-native-fs')
+import RNFS from 'react-native-fs';
 
 // 聊天的ui库
 import IMUI from 'aurora-imui-react-native'
 import JMessage from '../../../utils/JMessage';
+import { inject, observer } from 'mobx-react';
 // 聊天ui库中输入组件
 const InputView = IMUI.ChatInput;
 // 消息展示列表
@@ -34,8 +35,8 @@ function constructNormalMessage() {
   // 接受者:
   //                          发送者:
   message.isOutgoing = true;
- 
-  message.timeString ="";
+
+  message.timeString = "";
   message.fromUser = {
     userId: "",
     displayName: "",
@@ -45,8 +46,9 @@ function constructNormalMessage() {
 }
 
 
-
-export default class TestRNIMUI extends Component {
+@inject("UserStore")
+@observer
+class TestRNIMUI extends Component {
   constructor(props) {
     super(props);
     let initHeight;
@@ -107,13 +109,23 @@ export default class TestRNIMUI extends Component {
       // 设置消息相关的用户头像
       // 发送者的头像 this.props.UserStore.user.header
       // 接受者的头像 this.props.route.params.header
-      message.fromUser.avatarPath = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534926548887&di=f107f4f8bd50fada6c5770ef27535277&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F11%2F67%2F23%2F69i58PICP37.jpg",//1
+      // 如何判断接收者和发送者 
+      // 获取到消息对象中的一个 from.username 等于当前的登录用户 guid
+      if (v.from.username === this.props.UserStore.user.guid) {
+        // 当前消息是属于发送者  当前登录用户的
+        message.isOutgoing = true;
+        message.fromUser.avatarPath = BASE_URI + this.props.UserStore.user.header;
+      } else {
+        message.isOutgoing = false;
+        message.fromUser.avatarPath = BASE_URI + this.props.route.params.header;
+      }
+
       // 当前的消息类似 图片 还是 文本
       message.msgType = 'text';
       // 设置消息内容
-      message.text=v.text;
+      message.text = v.text;
       // 带上发送的时间
-      message.timeString=(new Date(v.createTime)).toLocaleTimeString();
+      message.timeString = (new Date(v.createTime)).toLocaleTimeString();
       // 图片路径
       // message.mediaPath = imageUrlArray[index]
       // 聊天消息的起泡大小
@@ -382,7 +394,7 @@ export default class TestRNIMUI extends Component {
           ref="NavigatorView">
           <Button
             style={styles.sendCustomBtn}
-            title="Custom Message"
+            title={this.props.route.params.nick_name}
             onPress={() => {
               if (Platform.OS === 'ios') {
                 var message = constructNormalMessage()
@@ -443,6 +455,7 @@ export default class TestRNIMUI extends Component {
           photoMessageRadius={5}
           maxBubbleWidth={0.7}
           videoDurationTextColor={"#ffffff"}
+          dateTextColor="#666666"
         />
         <InputView style={this.state.inputViewLayout}
           ref="ChatInput"
@@ -506,3 +519,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#3e83d7'
   }
 });
+
+
+export default TestRNIMUI
