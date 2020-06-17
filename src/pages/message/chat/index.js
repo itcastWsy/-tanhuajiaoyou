@@ -121,9 +121,14 @@ class TestRNIMUI extends Component {
       }
 
       // 当前的消息类似 图片 还是 文本
-      message.msgType = 'text';
-      // 设置消息内容
-      message.text = v.text;
+      if(v.type==="text"){
+        message.msgType = 'text';
+        // 设置消息内容
+        message.text = v.text;
+      }else if(v.type==="image"){
+        message.msgType="image";
+        message.mediaPath=v.thumbPath;
+      }
       // 带上发送的时间
       message.timeString = (new Date(v.createTime)).toLocaleTimeString();
       // 图片路径
@@ -300,33 +305,32 @@ class TestRNIMUI extends Component {
 
   // 发送图片消息
   onSendGalleryFiles = (mediaFiles) => {
-    /**
-     * WARN: This callback will return original image, 
-     * if insert it directly will high memory usage and blocking UI。
-     * You should crop the picture before insert to messageList。
-     * 
-     * WARN: 这里返回的是原图，直接插入大会话列表会很大且耗内存.
-     * 应该做裁剪操作后再插入到 messageListView 中，
-     * 一般的 IM SDK 会提供裁剪操作，或者开发者手动进行裁剪。
-     * 
-     * 代码用例不做裁剪操作。
-     */
-    Alert.alert('fas', JSON.stringify(mediaFiles))
-    for (index in mediaFiles) {
-      var message = constructNormalMessage()
-      if (mediaFiles[index].mediaType == "image") {
-        message.msgType = "image"
-      } else {
-        message.msgType = "video"
-        message.duration = mediaFiles[index].duration
-      }
 
-      message.mediaPath = mediaFiles[index].mediaPath
-      message.timeString = "8:00"
+    mediaFiles.forEach(async v => {
+      // 创建一个消息对象
+      const message = constructNormalMessage()
+      // 判断当前文件的类型
+      if (v.mediaType == "image") {
+        message.msgType = "image"
+      } 
+      message.mediaPath = v.mediaPath;
+      // 设置消息的状态 -> 发送中 
       message.status = "send_going"
       AuroraIController.appendMessages([message])
-      AuroraIController.scrollToBottom(true)
-    }
+      AuroraIController.scrollToBottom(true);
+
+      // 调用极光的发送图片的 代码来发送 
+      const username=this.props.route.params.guid;
+      const path=v.mediaPath;
+      const extras={user:JSON.stringify(this.props.UserStore.user)};
+      const res=await JMessage.sendImageMessage(username,path,extras);
+      console.log("===============");
+      console.log(res);
+      console.log("===============");
+
+      // 修改消息的状态 - 发送中 修改 -> 发送完毕
+      AuroraIController.updateMessage({...message,status:"send_succeed"});
+    })
 
     this.resetMenu()
   }
