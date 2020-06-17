@@ -9,6 +9,12 @@ import { pxToDp } from "../../../utils/stylesKits";
 import IconFont from "../../../components/IconFont";
 import LinearGradient from "react-native-linear-gradient";
 import ImageViewer from 'react-native-image-zoom-viewer';
+import JMessage from '../../../utils/JMessage';
+import { inject, observer } from 'mobx-react';
+import Toast from '../../../utils/Toast';
+
+@inject("UserStore")
+@observer
 class Index extends Component {
   state = {
     userDetail: {},
@@ -75,6 +81,19 @@ class Index extends Component {
       this.getDetail();
     }
 
+  }
+
+  // 点击了喜欢按钮
+  sendLike=async ()=>{
+    // 收件人 => 正在被浏览的用户 this.state.userDetail
+    const guid=this.state.userDetail.guid;
+    // 文本内容 => (当前的登录用户的)手机号码 + 喜欢了你
+    const text=this.props.UserStore.user.mobile +" 喜欢了你";
+    // 额外的数据 => 把当前登录用户 发送过去 
+    const extras={user:JSON.stringify(this.state.userDetail)};
+    const res=await JMessage.sendTextMessage(guid,text,extras);
+    console.log(res);
+    Toast.smile("喜欢成功",1000,"center");
   }
 
   render() {
@@ -155,6 +174,7 @@ class Index extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginRight: pxToDp(8) }}
+                  onPress={this.sendLike}
                 >
                   <LinearGradient
                     colors={["#6d47f8", "#e56b7f"]}
