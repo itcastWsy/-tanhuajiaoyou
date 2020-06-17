@@ -252,14 +252,20 @@ class TestRNIMUI extends Component {
   }
 
   // 发送文本消息 
-  onSendText = (text) => {
-    var message = constructNormalMessage()
-    var evenmessage = constructNormalMessage()
-
+  onSendText = async (text) => {
+    const message = constructNormalMessage()
     message.msgType = 'text'
     message.text = text
+    AuroraIController.appendMessages([message]);
 
-    AuroraIController.appendMessages([message])
+    // 极光来实现 发送文本
+    const username=this.props.route.params.guid;
+    // 额外的数据
+    const extras={user:JSON.stringify(this.props.UserStore.user)};
+    const res=await JMessage.sendTextMessage(username,text,extras);
+    console.log("++++++++++++==");
+    console.log(res);
+    console.log("++++++++++++==");
   }
 
   onTakePicture = (media) => {

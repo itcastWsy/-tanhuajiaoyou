@@ -88,7 +88,7 @@ class Index extends Component {
     // 收件人 => 正在被浏览的用户 this.state.userDetail
     const guid=this.state.userDetail.guid;
     // 文本内容 => (当前的登录用户的)手机号码 + 喜欢了你
-    const text=this.props.UserStore.user.mobile +" 喜欢了你";
+    const text=this.props.UserStore.user.nick_name +" 喜欢了你";
     // 额外的数据 => 把当前登录用户 发送过去 
     const extras={user:JSON.stringify(this.state.userDetail)};
     const res=await JMessage.sendTextMessage(guid,text,extras);
