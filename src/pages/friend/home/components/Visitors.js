@@ -36,7 +36,7 @@ class Index extends Component {
         <Text style={{flex:1,color:"#777",fontSize:pxToDp(15)}}>最近有{visitors.length}人来访,快去查看...</Text>
         <View style={{flexDirection:"row",flex:1,alignItems:"center",justifyContent:"space-around"}} >
          {
-           visitors.map((v,i)=><Image style={{width:pxToDp(50),height:pxToDp(50),
+           visitors.map((v,i)=><Image key={i} style={{width:pxToDp(50),height:pxToDp(50),
             borderRadius:pxToDp(25)
           }} 
           source={{uri:BASE_URI+v.header}}

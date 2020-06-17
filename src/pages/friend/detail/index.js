@@ -133,7 +133,7 @@ class Index extends Component {
                   borderRadius: pxToDp(8), alignItems: "center", justifyContent: 'center',
                   marginLeft: pxToDp(5)
                 }} >
-                  <Text style={{ color: "#fff" }} >3</Text>
+                  <Text style={{ color: "#fff" }} >{trends.length}</Text>
                 </View>
               </View>
               <View style={{ flexDirection: "row" }}>
