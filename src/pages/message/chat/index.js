@@ -1,26 +1,25 @@
 import React, { Component } from 'react'
 
-import {
-  StyleSheet,
-  View,
-  Alert,
-  Dimensions,
-  Button,
-  Platform,
-} from 'react-native'
+import { StyleSheet, View, Alert, Dimensions, Button, Platform, } from 'react-native'
 
-var RNFS = require('react-native-fs')
+// 文件操作库
+const RNFS = require('react-native-fs')
 
-var ReactNative = require('react-native')
+// 聊天的ui库
 import IMUI from 'aurora-imui-react-native'
-var InputView = IMUI.ChatInput
-var MessageListView = IMUI.MessageList
+// 聊天ui库中输入组件
+const InputView = IMUI.ChatInput;
+// 消息展示列表
+const MessageListView = IMUI.MessageList
+// 总的控制中心 
 const AuroraIController = IMUI.AuroraIMUIController
+// 获取屏幕相关的信息 对象
 const window = Dimensions.get('window')
 
 
-var themsgid = 1
+let themsgid = 1
 
+// 负责创建各种类型的消息
 function constructNormalMessage() {
 
   var message = {}
@@ -120,16 +119,6 @@ var imageUrlArray = [
   "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534943746996&di=ad157c6f6cf0559b272718793c5af048&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fphotoblog%2F1206%2F21%2Fc2%2F12078509_12078509_1340246370201.jpg"
 ]
 
-class CustomVew extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-  render() {
-    return (<img src={`${RNFS.MainBundlePath}/default_header.png`}></img>)
-  }
-}
 
 export default class TestRNIMUI extends Component {
   constructor(props) {
@@ -171,6 +160,7 @@ export default class TestRNIMUI extends Component {
     this.getHistoryMessage()
   }
   
+  // 获取历史消息
   getHistoryMessage() {
     var messages = []
     for (var index in imageUrlArray) {
@@ -318,6 +308,7 @@ export default class TestRNIMUI extends Component {
 
   }
 
+  // 发送文本消息 
   onSendText = (text) => {
     var message = constructNormalMessage()
     var evenmessage = constructNormalMessage()
@@ -369,6 +360,7 @@ export default class TestRNIMUI extends Component {
     // AuroraIController.appendMessages([message])
   }
 
+  // 发送图片消息
   onSendGalleryFiles = (mediaFiles) => {
     /**
      * WARN: This callback will return original image, 
