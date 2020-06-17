@@ -12,6 +12,7 @@ import TestSoul from "./pages/friend/testSoul";
 import TestQA from "./pages/friend/testSoul/testQA";
 import TestResult from "./pages/friend/testSoul/testResult";
 import Detail from "./pages/friend/detail";
+import Chat from "./pages/message/chat";
 import {inject,observer  } from "mobx-react";
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ class Nav extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+          <Stack.Screen name="Chat" component={Chat} />
           <Stack.Screen name="Detail" component={Detail} />
           <Stack.Screen name="TestResult" component={TestResult} />
           <Stack.Screen name="TestQA" component={TestQA} />

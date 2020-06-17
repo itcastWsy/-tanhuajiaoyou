@@ -96,6 +96,12 @@ class Index extends Component {
     Toast.smile("喜欢成功",1000,"center");
   }
 
+  // 点击跳转到聊天页面
+  goChat=()=>{
+    const {userDetail}=this.state;
+    this.props.navigation.navigate("Chat",userDetail);
+  }
+
   render() {
     // console.log(this.props.route.params);
     const { userDetail, imgUrls, currentIndex, showAlbum,trends } = this.state;
@@ -158,6 +164,7 @@ class Index extends Component {
               <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity
                   style={{ marginRight: pxToDp(8) }}
+                  onPress={this.goChat}
                 >
                   <LinearGradient
                     colors={["#f2ab5a", "#ec7c50"]}
