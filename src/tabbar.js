@@ -10,6 +10,7 @@ import My from "./pages/my/home";
 import request from "./utils/request";
 import { MY_INFO } from "./utils/pathMap";
 import { inject, observer } from 'mobx-react';
+import JMessage from './utils/JMessage';
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -19,6 +20,9 @@ class Index extends Component {
     // console.log(res);
     // 2 用户信息 存入到mobx中 
     this.props.UserStore.setUser(res.data);
+
+    // 3 进行极光登录
+    await JMessage.login(res.data.guid,res.data.mobile)
   }
   state = {
     selectedTab: "friend",

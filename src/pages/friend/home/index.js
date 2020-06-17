@@ -27,7 +27,7 @@ class Index extends Component {
     // 接口要的数据
     params: {
       page: 1,
-      pagesize: 10,
+      pagesize: 100,
       gender: "男",
       distance: 2,
       lastLogin: "",
@@ -84,7 +84,7 @@ class Index extends Component {
           </View>
         )}
       >
-        <View style={{ height: 1000 }}>
+        <View  >
           {/* 1.0 访客 开始 */}
           <Visitors />
           {/* 1.0 访客 结束 */}
