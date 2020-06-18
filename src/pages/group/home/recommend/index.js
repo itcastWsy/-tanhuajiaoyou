@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList,Image,TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import request from "../../../../utils/request";
-import { QZ_TJDT,BASE_URI } from "../../../../utils/pathMap";
+import { QZ_TJDT, BASE_URI } from "../../../../utils/pathMap";
 import IconFont from "../../../../components/IconFont";
-import {pxToDp  } from "../../../../utils/stylesKits";
+import { pxToDp } from "../../../../utils/stylesKits";
+import date from "../../../../utils/date";
 class Index extends Component {
   params = {
     page: 1,
@@ -34,7 +35,7 @@ class Index extends Component {
             style={{ padding: pxToDp(10), borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1) }}
           >
             {/* 2.2.1 用户信息 开始 */}
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", alignItems: 'center' }}>
               <View
                 style={{ paddingRight: pxToDp(15) }}
               ><Image
@@ -57,6 +58,9 @@ class Index extends Component {
                 </View>
               </View>
 
+              <TouchableOpacity>
+                <IconFont name="icongengduo" style={{ color: "#666", fontSize: pxToDp(20) }} />
+              </TouchableOpacity>
             </View>
             {/* 2.2.1 用户信息 结束 */}
 
@@ -76,6 +80,25 @@ class Index extends Component {
               )}
             </View>
             {/* 2.4 相册 结束 */}
+            {/* 2.5 距离时间 开始 */}
+            <View style={{ flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
+              <View><Text style={{ color: "#666" }} >距离 {item.dist} km</Text></View>
+              <View><Text style={{ color: "#666", marginLeft: pxToDp(8) }} >{date(item.create_time).fromNow()}</Text></View>
+            </View>
+            {/* 2.5 距离时间 结束 */}
+            {/* 2.6 3个小图标 开始 */}
+            <View style={{flexDirection:"row",justifyContent:"space-between"}}  >
+              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
+              <IconFont style={{color:"#666"}} name="icondianzan-o" /><Text style={{color:"#666"}} >{item.star_count}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
+              <IconFont style={{color:"#666"}} name="iconpinglun" /><Text style={{color:"#666"}} >{item.comment_count}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
+              <IconFont style={{color:"#666"}} name="iconxihuan-o" /><Text style={{color:"#666"}} >{item.like_count}</Text>
+              </TouchableOpacity>
+            </View>
+            {/* 2.6 3个小图标 结束 */}
           </View>}
         />
       </>
