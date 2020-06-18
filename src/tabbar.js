@@ -25,7 +25,7 @@ class Index extends Component {
     await JMessage.login(res.data.guid,res.data.mobile)
   }
   state = {
-    selectedTab: "friend",
+    selectedTab: "group",
     pages: [
       {
         selected: "friend",
