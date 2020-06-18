@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import request from "../../../../utils/request";
-import { QZ_TJDT, BASE_URI,QZ_DT_DZ } from "../../../../utils/pathMap";
+import { QZ_TJDT, BASE_URI,QZ_DT_DZ,QZ_DT_XH } from "../../../../utils/pathMap";
 import IconFont from "../../../../components/IconFont";
 import { pxToDp } from "../../../../utils/stylesKits";
 import date from "../../../../utils/date";
@@ -84,6 +84,23 @@ class Index extends Component {
     this.params.page=1;
     this.getList(true);
   }
+
+  // 喜欢
+  handleLike=async(item)=>{
+    const url=QZ_DT_XH.replace(":id",item.tid);
+    const res=await request.privateGet(url);
+    // console.log(res);
+    if(res.data.iscancelstar){
+      // 取消喜欢
+      Toast.smile("取消喜欢");
+    }else{
+      // 喜欢成功
+      Toast.smile("喜欢成功");
+    }
+
+    this.params.page=1;
+    this.getList(true);
+  }
   
   render() {
     const { list } = this.state;
@@ -157,10 +174,14 @@ class Index extends Component {
                >
                 <IconFont style={{ color: "#666" }} name="icondianzan-o" /><Text style={{ color: "#666" }} >{item.star_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+              <TouchableOpacity 
+
+              style={{ flexDirection: 'row', alignItems: 'center' }} >
                 <IconFont style={{ color: "#666" }} name="iconpinglun" /><Text style={{ color: "#666" }} >{item.comment_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+              <TouchableOpacity 
+              onPress={this.handleLike.bind(this,item)}
+              style={{ flexDirection: 'row', alignItems: 'center' }} >
                 <IconFont style={{ color: "#666" }} name="iconxihuan-o" /><Text style={{ color: "#666" }} >{item.like_count}</Text>
               </TouchableOpacity>
             </View>
