@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import request from "../../../../utils/request";
-import { QZ_TJDT, BASE_URI } from "../../../../utils/pathMap";
+import { QZ_TJDT, BASE_URI,QZ_DT_DZ } from "../../../../utils/pathMap";
 import IconFont from "../../../../components/IconFont";
 import { pxToDp } from "../../../../utils/stylesKits";
 import date from "../../../../utils/date";
+import Toast from '../../../../utils/Toast';
+import JMessage from "../../../../utils/JMessage";
+import { inject, observer } from 'mobx-react';
+@inject("UserStore")
+@observer
 class Index extends Component {
   params = {
     page: 1,
@@ -20,10 +25,15 @@ class Index extends Component {
   }
 
   // 获取 推荐动态的数据
-  getList = async () => {
+  getList = async (isNew=false) => {
     const res = await request.privateGet(QZ_TJDT, this.params);
     console.log(res);
-    this.setState({ list: [...this.state.list, ...res.data] });
+    if(isNew){
+      // 重置数据
+      this.setState({ list: res.data });
+    }else{
+      this.setState({ list: [...this.state.list, ...res.data] });
+    }
     this.totalPages = res.pages;
     this.isLoading = false;
   }
@@ -43,6 +53,38 @@ class Index extends Component {
       this.getList();
     }
   }
+
+  // 点赞
+  handleStar=async(item)=>{
+    /* 
+    1 构造点赞参数 发送请求
+    2 返回值里 提示 点赞成功还是取消点赞 
+    3 点赞成功 =>  通过极光 给发送一条消息 "xxx 点赞了你的动态"
+    4 重新发送请求 获取 列表数据-> 渲染
+     */
+    const url=QZ_DT_DZ.replace(":id",item.tid);
+    const res=await request.privateGet(url);
+    console.log(res);
+    // 点赞成功 还是 取消点赞
+    if(res.data.iscancelstar){
+      // 取消点赞
+      Toast.smile("取消成功");
+    }else{
+      // 点赞成功
+      Toast.smile("点赞成功");
+
+      const text=`${this.props.UserStore.user.nick_name} 点赞了你的动态`;
+      const extras={user:JSON.stringify(this.props.UserStore.user)};
+      JMessage.sendTextMessage(item.guid,text,extras);
+
+    }
+
+    // 重新发送请求 获取数据
+    // this.setState({ list: [] });
+    this.params.page=1;
+    this.getList(true);
+  }
+  
   render() {
     const { list } = this.state;
     return (
@@ -104,13 +146,15 @@ class Index extends Component {
             {/* 2.4 相册 结束 */}
             {/* 2.5 距离时间 开始 */}
             <View style={{ flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
-              <View><Text style={{ color: "#666" }} >距离 {item.dist} km</Text></View>
+              <View><Text style={{ color: "#666" }} >距离 {item.dist} m</Text></View>
               <View><Text style={{ color: "#666", marginLeft: pxToDp(8) }} >{date(item.create_time).fromNow()}</Text></View>
             </View>
             {/* 2.5 距离时间 结束 */}
             {/* 2.6 3个小图标 开始 */}
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}  >
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}
+              onPress={this.handleStar.bind(this,item)}
+               >
                 <IconFont style={{ color: "#666" }} name="icondianzan-o" /><Text style={{ color: "#666" }} >{item.star_count}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
