@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import request from "../../../../utils/request";
-import { QZ_TJDT, BASE_URI,QZ_DT_DZ,QZ_DT_XH } from "../../../../utils/pathMap";
+import { QZ_TJDT, BASE_URI, QZ_DT_DZ, QZ_DT_XH ,QZ_DT_BGXQ} from "../../../../utils/pathMap";
 import IconFont from "../../../../components/IconFont";
 import { pxToDp } from "../../../../utils/stylesKits";
 import date from "../../../../utils/date";
 import Toast from '../../../../utils/Toast';
 import JMessage from "../../../../utils/JMessage";
 import { inject, observer } from 'mobx-react';
+import { ActionSheet } from "teaset";
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -25,13 +26,13 @@ class Index extends Component {
   }
 
   // 获取 推荐动态的数据
-  getList = async (isNew=false) => {
+  getList = async (isNew = false) => {
     const res = await request.privateGet(QZ_TJDT, this.params);
     console.log(res);
-    if(isNew){
+    if (isNew) {
       // 重置数据
       this.setState({ list: res.data });
-    }else{
+    } else {
       this.setState({ list: [...this.state.list, ...res.data] });
     }
     this.totalPages = res.pages;
@@ -55,53 +56,74 @@ class Index extends Component {
   }
 
   // 点赞
-  handleStar=async(item)=>{
+  handleStar = async (item) => {
     /* 
     1 构造点赞参数 发送请求
     2 返回值里 提示 点赞成功还是取消点赞 
     3 点赞成功 =>  通过极光 给发送一条消息 "xxx 点赞了你的动态"
     4 重新发送请求 获取 列表数据-> 渲染
      */
-    const url=QZ_DT_DZ.replace(":id",item.tid);
-    const res=await request.privateGet(url);
+    const url = QZ_DT_DZ.replace(":id", item.tid);
+    const res = await request.privateGet(url);
     console.log(res);
     // 点赞成功 还是 取消点赞
-    if(res.data.iscancelstar){
+    if (res.data.iscancelstar) {
       // 取消点赞
       Toast.smile("取消成功");
-    }else{
+    } else {
       // 点赞成功
       Toast.smile("点赞成功");
 
-      const text=`${this.props.UserStore.user.nick_name} 点赞了你的动态`;
-      const extras={user:JSON.stringify(this.props.UserStore.user)};
-      JMessage.sendTextMessage(item.guid,text,extras);
+      const text = `${this.props.UserStore.user.nick_name} 点赞了你的动态`;
+      const extras = { user: JSON.stringify(this.props.UserStore.user) };
+      JMessage.sendTextMessage(item.guid, text, extras);
 
     }
 
     // 重新发送请求 获取数据
     // this.setState({ list: [] });
-    this.params.page=1;
+    this.params.page = 1;
     this.getList(true);
   }
 
   // 喜欢
-  handleLike=async(item)=>{
-    const url=QZ_DT_XH.replace(":id",item.tid);
-    const res=await request.privateGet(url);
+  handleLike = async (item) => {
+    const url = QZ_DT_XH.replace(":id", item.tid);
+    const res = await request.privateGet(url);
     // console.log(res);
-    if(res.data.iscancelstar){
+    if (res.data.iscancelstar) {
       // 取消喜欢
       Toast.smile("取消喜欢");
-    }else{
+    } else {
       // 喜欢成功
       Toast.smile("喜欢成功");
     }
 
+    this.params.page = 1;
+    this.getList(true);
+  }
+
+  // 点击 更多 按钮
+  handleMore = async (item) => {
+
+    const opts = [
+      { title: "举报", onPress: () => alert("举报") },
+      { title: "不感兴趣", onPress: () => this.noInterest(item) }
+    ]
+    ActionSheet.show(opts, { title: "取消" });
+  }
+
+  // 不感兴趣 => 获取动态列表的时候 里面就不会出现当前用户
+  noInterest =async (item) => { 
+    const url=QZ_DT_BGXQ.replace(":id",item.tid);
+    const res=await request.privateGet(url);
+
+    Toast.smile("操作成功");
+
     this.params.page=1;
     this.getList(true);
   }
-  
+
   render() {
     const { list } = this.state;
     return (
@@ -139,7 +161,9 @@ class Index extends Component {
                 </View>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.handleMore.bind(this, item)}
+              >
                 <IconFont name="icongengduo" style={{ color: "#666", fontSize: pxToDp(20) }} />
               </TouchableOpacity>
             </View>
@@ -170,26 +194,26 @@ class Index extends Component {
             {/* 2.6 3个小图标 开始 */}
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}  >
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}
-              onPress={this.handleStar.bind(this,item)}
-               >
+                onPress={this.handleStar.bind(this, item)}
+              >
                 <IconFont style={{ color: "#666" }} name="icondianzan-o" /><Text style={{ color: "#666" }} >{item.star_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
 
-              style={{ flexDirection: 'row', alignItems: 'center' }} >
+                style={{ flexDirection: 'row', alignItems: 'center' }} >
                 <IconFont style={{ color: "#666" }} name="iconpinglun" /><Text style={{ color: "#666" }} >{item.comment_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-              onPress={this.handleLike.bind(this,item)}
-              style={{ flexDirection: 'row', alignItems: 'center' }} >
+              <TouchableOpacity
+                onPress={this.handleLike.bind(this, item)}
+                style={{ flexDirection: 'row', alignItems: 'center' }} >
                 <IconFont style={{ color: "#666" }} name="iconxihuan-o" /><Text style={{ color: "#666" }} >{item.like_count}</Text>
               </TouchableOpacity>
             </View>
             {/* 2.6 3个小图标 结束 */}
           </View>
             {(this.params.page >= this.totalPages) && (index === list.length - 1) ? <View
-            style={{height:pxToDp(30),alignItems:'center',justifyContent:'center'}}
-            ><Text style={{color:"#666"}} >没有数据</Text></View> : <></>}
+              style={{ height: pxToDp(30), alignItems: 'center', justifyContent: 'center' }}
+            ><Text style={{ color: "#666" }} >没有数据</Text></View> : <></>}
           </>
           }
         />
