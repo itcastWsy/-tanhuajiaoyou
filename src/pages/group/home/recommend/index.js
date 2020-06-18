@@ -8,8 +8,10 @@ import date from "../../../../utils/date";
 class Index extends Component {
   params = {
     page: 1,
-    pagesize: 10
+    pagesize: 3
   }
+  totalPages = 2;
+  isLoading = false;
   state = {
     list: []
   }
@@ -21,16 +23,36 @@ class Index extends Component {
   getList = async () => {
     const res = await request.privateGet(QZ_TJDT, this.params);
     console.log(res);
-    this.setState({ list: res.data });
+    this.setState({ list: [...this.state.list, ...res.data] });
+    this.totalPages = res.pages;
+    this.isLoading = false;
+  }
+
+  // 滚动条触底事件
+  onEndReached = () => {
+    /* 
+    1 判断还有没有下一页数据
+    2 节流阀
+     */
+    if ((this.params.page >= this.totalPages) || this.isLoading) {
+      return;
+    } else {
+      // 还有下一页数据
+      this.isLoading = true;
+      this.params.page++;
+      this.getList();
+    }
   }
   render() {
     const { list } = this.state;
     return (
       <>
         <FlatList
+          onEndReached={this.onEndReached}
+          onEndReachedThreshold={0.1}
           data={list}
           keyExtractor={v => v.tid + ""}
-          renderItem={({ item, index }) => <View
+          renderItem={({ item, index }) => <><View
             key={index}
             style={{ padding: pxToDp(10), borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1) }}
           >
@@ -87,20 +109,26 @@ class Index extends Component {
             </View>
             {/* 2.5 距离时间 结束 */}
             {/* 2.6 3个小图标 开始 */}
-            <View style={{flexDirection:"row",justifyContent:"space-between"}}  >
-              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
-              <IconFont style={{color:"#666"}} name="icondianzan-o" /><Text style={{color:"#666"}} >{item.star_count}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}  >
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+                <IconFont style={{ color: "#666" }} name="icondianzan-o" /><Text style={{ color: "#666" }} >{item.star_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
-              <IconFont style={{color:"#666"}} name="iconpinglun" /><Text style={{color:"#666"}} >{item.comment_count}</Text>
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+                <IconFont style={{ color: "#666" }} name="iconpinglun" /><Text style={{ color: "#666" }} >{item.comment_count}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection:'row',alignItems:'center'}} >
-              <IconFont style={{color:"#666"}} name="iconxihuan-o" /><Text style={{color:"#666"}} >{item.like_count}</Text>
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} >
+                <IconFont style={{ color: "#666" }} name="iconxihuan-o" /><Text style={{ color: "#666" }} >{item.like_count}</Text>
               </TouchableOpacity>
             </View>
             {/* 2.6 3个小图标 结束 */}
-          </View>}
+          </View>
+            {(this.params.page >= this.totalPages) && (index === list.length - 1) ? <View
+            style={{height:pxToDp(30),alignItems:'center',justifyContent:'center'}}
+            ><Text style={{color:"#666"}} >没有数据</Text></View> : <></>}
+          </>
+          }
         />
+
       </>
     );
   }
