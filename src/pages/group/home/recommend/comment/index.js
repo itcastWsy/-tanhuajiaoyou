@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL,QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
 import request from "../../../../../utils/request";
+import Toast from '../../../../../utils/Toast';
 class Index extends Component {
   
   params = {
@@ -15,7 +16,8 @@ class Index extends Component {
     pagesize: 5
   }
   state = {
-    list: []
+    list: [],
+    counts:0
   }
   componentDidMount() {
     this.getList();
@@ -26,13 +28,22 @@ class Index extends Component {
     const url = QZ_DT_PL.replace(":id", this.props.route.params.tid);
     const res = await request.privateGet(url, this.params);
     // console.log(res);
-    this.setState({ list: res.data });
+    this.setState({ list: res.data ,counts:res.counts});
   }
 
+  // 给评论点赞
+  handleSetStar=async(id)=>{
+    const url=QZ_DT_PL_DZ.replace(":id",id);
+    const res=await request.privateGet(url);
+    console.log(res);
+    Toast.smile("点赞成功");
+    this.params.page=1;
+    this.getList();
+  }
 
   render() {
     const item = this.props.route.params;
-    const { list } = this.state;
+    const { list,counts } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="最新评论" />
@@ -92,7 +103,7 @@ class Index extends Component {
               <View style={{
                 backgroundColor: "red", height: pxToDp(20), width: pxToDp(20),
                 borderRadius: pxToDp(10), marginLeft: pxToDp(5), alignItems: "center", justifyContent: "center"
-              }}><Text style={{ color: "#fff" }} >3</Text></View>
+              }}><Text style={{ color: "#fff" }} >{counts}</Text></View>
             </View>
             <View>
               <THButton
@@ -119,10 +130,12 @@ class Index extends Component {
                 <Text style={{color:"#666",fontSize:pxToDp(13),marginTop:pxToDp(5),marginBottom:pxToDp(5)}}>{date(v.create_time).format("YYYY-MM-DD HH:mm:ss")}</Text>
                 <Text>{v.content}</Text>
               </View>
-              <View style={{flexDirection:"row",flex:1,justifyContent:"flex-end",alignItems:"center"}}>
+              <TouchableOpacity 
+              onPress={this.handleSetStar.bind(this,v.cid)}
+              style={{flexDirection:"row",flex:1,justifyContent:"flex-end",alignItems:"center"}}>
                 <IconFont style={{color:"#666",fontSize:pxToDp(13)}}  name="icondianzan-o" />
                 <Text style={{color:"#666"}}>{v.star}</Text>
-              </View>
+              </TouchableOpacity>
             </View>)}
           </View>
           {/* 2.7 评论列表 结束 */}
