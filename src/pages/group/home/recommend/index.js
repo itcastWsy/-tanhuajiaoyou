@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, Modal } from 'react-native';
 import request from "../../../../utils/request";
-import { QZ_TJDT, BASE_URI, QZ_DT_DZ, QZ_DT_XH ,QZ_DT_BGXQ} from "../../../../utils/pathMap";
+import { QZ_TJDT, BASE_URI, QZ_DT_DZ, QZ_DT_XH, QZ_DT_BGXQ } from "../../../../utils/pathMap";
 import IconFont from "../../../../components/IconFont";
 import { pxToDp } from "../../../../utils/stylesKits";
 import date from "../../../../utils/date";
@@ -9,6 +9,7 @@ import Toast from '../../../../utils/Toast';
 import JMessage from "../../../../utils/JMessage";
 import { inject, observer } from 'mobx-react';
 import { ActionSheet } from "teaset";
+import ImageViewer from 'react-native-image-zoom-viewer';
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -19,7 +20,10 @@ class Index extends Component {
   totalPages = 2;
   isLoading = false;
   state = {
-    list: []
+    list: [],
+    showAlbum:false,
+    imgUrls:[],
+    currentIndex:0
   }
   componentDidMount() {
     this.getList();
@@ -114,18 +118,23 @@ class Index extends Component {
   }
 
   // 不感兴趣 => 获取动态列表的时候 里面就不会出现当前用户
-  noInterest =async (item) => { 
-    const url=QZ_DT_BGXQ.replace(":id",item.tid);
-    const res=await request.privateGet(url);
+  noInterest = async (item) => {
+    const url = QZ_DT_BGXQ.replace(":id", item.tid);
+    const res = await request.privateGet(url);
 
     Toast.smile("操作成功");
 
-    this.params.page=1;
+    this.params.page = 1;
     this.getList(true);
   }
 
+  // 点击相册图片放大
+  handleShowAlbum=(index,ii)=>{
+    const imgUrls=this.state.list[index].images.map(v=>({url:BASE_URI+v.thum_img_path}));
+    this.setState({imgUrls ,currentIndex:ii,showAlbum:true  });
+  }
   render() {
-    const { list } = this.state;
+    const { list ,imgUrls,currentIndex,showAlbum} = this.state;
     return (
       <>
         <FlatList
@@ -177,7 +186,7 @@ class Index extends Component {
             {/* 2.4 相册 开始 */}
             <View style={{ flexWrap: "wrap", flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
               {item.images.map((vv, ii) => <TouchableOpacity
-                onPress={() => this.handleShowAlbum(i, ii)}
+                onPress={() => this.handleShowAlbum(index, ii)}
                 key={ii}><Image
                   style={{ width: pxToDp(70), height: pxToDp(70), marginRight: pxToDp(5) }}
                   source={{ uri: BASE_URI + vv.thum_img_path }} />
@@ -216,8 +225,13 @@ class Index extends Component {
             ><Text style={{ color: "#666" }} >没有数据</Text></View> : <></>}
           </>
           }
-        />
 
+        />
+        <Modal visible={showAlbum} transparent={true}>
+          <ImageViewer
+            onClick={() => this.setState({ showAlbum: false })}
+            imageUrls={imgUrls} index={currentIndex} />
+        </Modal>
       </>
     );
   }
