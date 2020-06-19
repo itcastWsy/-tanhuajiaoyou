@@ -10,9 +10,11 @@ import JMessage from "../../../../utils/JMessage";
 import { inject, observer } from 'mobx-react';
 import { ActionSheet } from "teaset";
 import ImageViewer from 'react-native-image-zoom-viewer';
+import { NavigationContext  } from "@react-navigation/native";
 @inject("UserStore")
 @observer
 class Index extends Component {
+  static contextType=NavigationContext;
   params = {
     page: 1,
     pagesize: 3
@@ -21,9 +23,9 @@ class Index extends Component {
   isLoading = false;
   state = {
     list: [],
-    showAlbum:false,
-    imgUrls:[],
-    currentIndex:0
+    showAlbum: false,
+    imgUrls: [],
+    currentIndex: 0
   }
   componentDidMount() {
     this.getList();
@@ -129,12 +131,18 @@ class Index extends Component {
   }
 
   // 点击相册图片放大
-  handleShowAlbum=(index,ii)=>{
-    const imgUrls=this.state.list[index].images.map(v=>({url:BASE_URI+v.thum_img_path}));
-    this.setState({imgUrls ,currentIndex:ii,showAlbum:true  });
+  handleShowAlbum = (index, ii) => {
+    const imgUrls = this.state.list[index].images.map(v => ({ url: BASE_URI + v.thum_img_path }));
+    this.setState({ imgUrls, currentIndex: ii, showAlbum: true });
+  }
+
+  // 跳转到评论页面
+  goComment=(item)=>{
+    // this.props.navigation
+    this.context.navigate("Comment",item);
   }
   render() {
-    const { list ,imgUrls,currentIndex,showAlbum} = this.state;
+    const { list, imgUrls, currentIndex, showAlbum } = this.state;
     return (
       <>
         <FlatList
@@ -208,7 +216,7 @@ class Index extends Component {
                 <IconFont style={{ color: "#666" }} name="icondianzan-o" /><Text style={{ color: "#666" }} >{item.star_count}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-
+                onPress={this.goComment.bind(this, item)}
                 style={{ flexDirection: 'row', alignItems: 'center' }} >
                 <IconFont style={{ color: "#666" }} name="iconpinglun" /><Text style={{ color: "#666" }} >{item.comment_count}</Text>
               </TouchableOpacity>
