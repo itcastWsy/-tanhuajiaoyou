@@ -3,15 +3,38 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
+import request from "../../../../../utils/request";
 class Index extends Component {
+  
+  params = {
+    page: 1,
+    pagesize: 5
+  }
+  state = {
+    list: []
+  }
+  componentDidMount() {
+    this.getList();
+  }
+
+  // 获取评论列表
+  getList = async () => {
+    const url = QZ_DT_PL.replace(":id", this.props.route.params.tid);
+    const res = await request.privateGet(url, this.params);
+    // console.log(res);
+    this.setState({ list: res.data });
+  }
+
+
   render() {
     const item = this.props.route.params;
+    const { list } = this.state;
     return (
-      <View style={{flex:1,backgroundColor:"#fff"}}>
+      <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="最新评论" />
         {/* 1.0 用户信息 开始 */}
         <View style={{ padding: pxToDp(10) }}>
@@ -73,12 +96,36 @@ class Index extends Component {
             </View>
             <View>
               <THButton
-              textStyle={{fontSize:pxToDp(10)}}
+                textStyle={{ fontSize: pxToDp(10) }}
                 style={{ width: pxToDp(80), height: pxToDp(20), borderRadius: pxToDp(10) }}
               >发表评论</THButton>
             </View>
           </View>
           {/* 2.6 最新评论 发表评论 结束 */}
+          {/* 2.7 评论列表 开始 */}
+          <View>
+            {list.map((v, i) => <View
+              key={i}
+              style={{
+                flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5),
+                borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1),alignItems:"center"
+              }}
+            >
+              <View style={{paddingRight:pxToDp(10)}}>
+                <Image style={{ width: pxToDp(40), height: pxToDp(40), borderRadius: pxToDp(20) }} source={{ uri: BASE_URI + v.header }} />
+              </View>
+              <View>
+                <Text style={{color:"#666"}}>{v.nick_name}</Text>
+                <Text style={{color:"#666",fontSize:pxToDp(13),marginTop:pxToDp(5),marginBottom:pxToDp(5)}}>{date(v.create_time).format("YYYY-MM-DD HH:mm:ss")}</Text>
+                <Text>{v.content}</Text>
+              </View>
+              <View style={{flexDirection:"row",flex:1,justifyContent:"flex-end",alignItems:"center"}}>
+                <IconFont style={{color:"#666",fontSize:pxToDp(13)}}  name="icondianzan-o" />
+                <Text style={{color:"#666"}}>{v.star}</Text>
+              </View>
+            </View>)}
+          </View>
+          {/* 2.7 评论列表 结束 */}
         </View>
         {/* 1.0 用户信息 结束 */}
       </View>
