@@ -1,23 +1,23 @@
 
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL,QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
 import request from "../../../../../utils/request";
 import Toast from '../../../../../utils/Toast';
 class Index extends Component {
-  
+
   params = {
     page: 1,
     pagesize: 5
   }
   state = {
     list: [],
-    counts:0
+    counts: 0
   }
   componentDidMount() {
     this.getList();
@@ -28,22 +28,22 @@ class Index extends Component {
     const url = QZ_DT_PL.replace(":id", this.props.route.params.tid);
     const res = await request.privateGet(url, this.params);
     // console.log(res);
-    this.setState({ list: res.data ,counts:res.counts});
+    this.setState({ list: res.data, counts: res.counts });
   }
 
   // 给评论点赞
-  handleSetStar=async(id)=>{
-    const url=QZ_DT_PL_DZ.replace(":id",id);
-    const res=await request.privateGet(url);
+  handleSetStar = async (id) => {
+    const url = QZ_DT_PL_DZ.replace(":id", id);
+    const res = await request.privateGet(url);
     console.log(res);
     Toast.smile("点赞成功");
-    this.params.page=1;
+    this.params.page = 1;
     this.getList();
   }
 
   render() {
     const item = this.props.route.params;
-    const { list,counts } = this.state;
+    const { list, counts } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="最新评论" />
@@ -119,26 +119,44 @@ class Index extends Component {
               key={i}
               style={{
                 flexDirection: "row", paddingTop: pxToDp(5), paddingBottom: pxToDp(5),
-                borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1),alignItems:"center"
+                borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1), alignItems: "center"
               }}
             >
-              <View style={{paddingRight:pxToDp(10)}}>
+              <View style={{ paddingRight: pxToDp(10) }}>
                 <Image style={{ width: pxToDp(40), height: pxToDp(40), borderRadius: pxToDp(20) }} source={{ uri: BASE_URI + v.header }} />
               </View>
               <View>
-                <Text style={{color:"#666"}}>{v.nick_name}</Text>
-                <Text style={{color:"#666",fontSize:pxToDp(13),marginTop:pxToDp(5),marginBottom:pxToDp(5)}}>{date(v.create_time).format("YYYY-MM-DD HH:mm:ss")}</Text>
+                <Text style={{ color: "#666" }}>{v.nick_name}</Text>
+                <Text style={{ color: "#666", fontSize: pxToDp(13), marginTop: pxToDp(5), marginBottom: pxToDp(5) }}>{date(v.create_time).format("YYYY-MM-DD HH:mm:ss")}</Text>
                 <Text>{v.content}</Text>
               </View>
-              <TouchableOpacity 
-              onPress={this.handleSetStar.bind(this,v.cid)}
-              style={{flexDirection:"row",flex:1,justifyContent:"flex-end",alignItems:"center"}}>
-                <IconFont style={{color:"#666",fontSize:pxToDp(13)}}  name="icondianzan-o" />
-                <Text style={{color:"#666"}}>{v.star}</Text>
+              <TouchableOpacity
+                onPress={this.handleSetStar.bind(this, v.cid)}
+                style={{ flexDirection: "row", flex: 1, justifyContent: "flex-end", alignItems: "center" }}>
+                <IconFont style={{ color: "#666", fontSize: pxToDp(13) }} name="icondianzan-o" />
+                <Text style={{ color: "#666" }}>{v.star}</Text>
               </TouchableOpacity>
             </View>)}
           </View>
           {/* 2.7 评论列表 结束 */}
+          <Modal
+            visible={true}
+            transparent={true}
+            animationType="slide"
+          >
+            <TouchableOpacity style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", position: "relative" }}>
+              <View style={{
+                backgroundColor: "#eee", flexDirection: "row",alignItems:"center",
+                position: "absolute", width: "100%", left: 0, bottom: 0,padding:pxToDp(5)
+              }} >
+                <TextInput 
+                placeholder="发表评论"
+                style={{ backgroundColor: "#fff", flex: 5 ,borderRadius:pxToDp(18),height:pxToDp(40)}} />
+                <Text style={{ flex: 1 ,textAlign:"center",color:"#666"}} >发送</Text>
+              </View>
+
+            </TouchableOpacity>
+          </Modal>
         </View>
         {/* 1.0 用户信息 结束 */}
       </View>
