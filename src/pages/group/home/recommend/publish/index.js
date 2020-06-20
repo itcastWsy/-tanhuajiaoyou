@@ -8,6 +8,8 @@ import ImagePicker from 'react-native-image-picker';
 import Toast from '../../../../../utils/Toast';
 import { ActionSheet } from "teaset";
 import Emotion from "../../../../../components/Emotion";
+import {  QZ_IMG_UPLOAD} from "../../../../../utils/pathMap";
+import request from "../../../../../utils/request";
 class Index extends Component {
   state = {
     textContent: "",
@@ -72,7 +74,9 @@ class Index extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log("===============");
-      console.log(response);
+      // console.log(response);
+      const { data, ...others } = response;
+      console.log(others);
       console.log("===============");
 
       if (response.didCancel) {
@@ -120,18 +124,49 @@ class Index extends Component {
   }
 
   // 发动态
-  submitTrend=()=>{
+  submitTrend = async() => {
     /* 
     1 获取用户的输入 文本内容,图片,当前位置.. 校验
     2 先将 选择到图片 上传到对应的接口 返回 图片的在线的地址 
     3 将上面的数据 结合 图片 一并提交到后台 完成 动态的发布
     4 返回上一个页面  推荐页面
      */
-    const {textContent,location,longitude,latitude}=this.state;
-    if(!textContent||!location||!longitude||!latitude){
-      Toast.message("输入不合法");
-      return ;
-    }
+    // const {textContent,location,longitude,latitude}=this.state;
+    // if(!textContent||!location||!longitude||!latitude){
+    //   Toast.message("输入不合法");
+    //   return ;
+    // }
+    //     headers:{  'Content-type': 'multipart/form-data;charset=utf-8'}
+
+    // FormData {
+    // 	key:"images",
+    //     value:{
+    //     uri:"file:///storage...."
+    //     name:"xxx.png",
+    //     type:"application/octet-stream"
+    // 	}
+    // }
+
+    // 图片上传的代码
+    // 1 获取用户选择了的 图片
+    const { tmpImgList } = this.state;
+    const params = new FormData();
+    tmpImgList.forEach(v => {
+      const imgObj = {
+        uri: "file://" + v.path,
+        name: v.fileName,
+        type: "application/octet-stream"
+      }
+      params.append("images", imgObj);
+    });
+
+    const res= await request.privatePost(QZ_IMG_UPLOAD,params,{
+      headers:{'Content-type': 'multipart/form-data;charset=utf-8'}
+    })
+
+    console.log(res); 
+
+
   }
   render() {
     const { textContent, location, tmpImgList, showEmotion } = this.state;
@@ -190,10 +225,10 @@ class Index extends Component {
           >
             <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="icontupian" />
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={this.toggleEmotion}
           >
-            <IconFont style={{ fontSize: pxToDp(30), color: showEmotion?"#df6a88":"#666" }} name="iconbiaoqing" />
+            <IconFont style={{ fontSize: pxToDp(30), color: showEmotion ? "#df6a88" : "#666" }} name="iconbiaoqing" />
           </TouchableOpacity>
         </View>
         {/* 4.0 工具栏 结束 */}
