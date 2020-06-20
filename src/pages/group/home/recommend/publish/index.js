@@ -118,12 +118,27 @@ class Index extends Component {
   toggleEmotion = () => {
     this.setState({ showEmotion: !this.state.showEmotion });
   }
+
+  // 发动态
+  submitTrend=()=>{
+    /* 
+    1 获取用户的输入 文本内容,图片,当前位置.. 校验
+    2 先将 选择到图片 上传到对应的接口 返回 图片的在线的地址 
+    3 将上面的数据 结合 图片 一并提交到后台 完成 动态的发布
+    4 返回上一个页面  推荐页面
+     */
+    const {textContent,location,longitude,latitude}=this.state;
+    if(!textContent||!location||!longitude||!latitude){
+      Toast.message("输入不合法");
+      return ;
+    }
+  }
   render() {
     const { textContent, location, tmpImgList, showEmotion } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="发动态" rightText="发帖"
-          onRightPress={() => console.log("发帖了")}
+          onRightPress={this.submitTrend}
         />
         {/* 1.0 输入框 开始 */}
         <TouchableOpacity
@@ -175,7 +190,7 @@ class Index extends Component {
           >
             <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="icontupian" />
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity 
             onPress={this.toggleEmotion}
           >
             <IconFont style={{ fontSize: pxToDp(30), color: showEmotion?"#df6a88":"#666" }} name="iconbiaoqing" />
