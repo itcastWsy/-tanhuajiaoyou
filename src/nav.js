@@ -24,7 +24,7 @@ class Nav extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      initialRouteName:this.props.RootStore.token?"Publish":"Login"
+      initialRouteName:this.props.RootStore.token?"Tabbar":"Login"
     }
   }
   render() { 

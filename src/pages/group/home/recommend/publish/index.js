@@ -8,7 +8,7 @@ import ImagePicker from 'react-native-image-picker';
 import Toast from '../../../../../utils/Toast';
 import { ActionSheet } from "teaset";
 import Emotion from "../../../../../components/Emotion";
-import {  QZ_IMG_UPLOAD} from "../../../../../utils/pathMap";
+import { QZ_IMG_UPLOAD,QZ_DT_PUBLISH } from "../../../../../utils/pathMap";
 import request from "../../../../../utils/request";
 class Index extends Component {
   state = {
@@ -19,11 +19,11 @@ class Index extends Component {
     latitude: "",
     // 详细地址
     location: "",
-    imageContent: [
-      {
-        "headImgShortPath": "/upload/album/18665711978/1576633170560_0.9746430185850421.jpg"
-      }
-    ],
+    // imageContent: [
+    //   {
+    //     "headImgShortPath": "/upload/album/18665711978/1576633170560_0.9746430185850421.jpg"
+    //   }
+    // ],
     // 临时图片数组
     tmpImgList: [],
     showEmotion: false
@@ -124,49 +124,52 @@ class Index extends Component {
   }
 
   // 发动态
-  submitTrend = async() => {
+  submitTrend = async () => {
     /* 
     1 获取用户的输入 文本内容,图片,当前位置.. 校验
     2 先将 选择到图片 上传到对应的接口 返回 图片的在线的地址 
     3 将上面的数据 结合 图片 一并提交到后台 完成 动态的发布
     4 返回上一个页面  推荐页面
      */
-    // const {textContent,location,longitude,latitude}=this.state;
-    // if(!textContent||!location||!longitude||!latitude){
-    //   Toast.message("输入不合法");
-    //   return ;
-    // }
-    //     headers:{  'Content-type': 'multipart/form-data;charset=utf-8'}
-
-    // FormData {
-    // 	key:"images",
-    //     value:{
-    //     uri:"file:///storage...."
-    //     name:"xxx.png",
-    //     type:"application/octet-stream"
-    // 	}
-    // }
-
+    const {textContent,location,longitude,latitude}=this.state;
+    if(!textContent||!location||!longitude||!latitude){
+      Toast.message("输入不合法");
+      return ;
+    }
     // 图片上传的代码
+    const imageContent= await this.uploadImage();
+
+    const params={textContent,location,longitude,latitude,imageContent};
+
+    const res=await request.privatePost(QZ_DT_PUBLISH,params);
+
+    console.log(res);
+
+  }
+
+  // 上传图片
+  uploadImage = async () => {
     // 1 获取用户选择了的 图片
     const { tmpImgList } = this.state;
-    const params = new FormData();
-    tmpImgList.forEach(v => {
-      const imgObj = {
-        uri: "file://" + v.path,
-        name: v.fileName,
-        type: "application/octet-stream"
-      }
-      params.append("images", imgObj);
-    });
+    if (tmpImgList.length) {
+      const params = new FormData();
+      tmpImgList.forEach(v => {
+        const imgObj = {
+          uri: "file://" + v.path,
+          name: v.fileName,
+          type: "application/octet-stream"
+        }
+        params.append("images", imgObj);
+      });
 
-    const res= await request.privatePost(QZ_IMG_UPLOAD,params,{
-      headers:{'Content-type': 'multipart/form-data;charset=utf-8'}
-    })
-
-    console.log(res); 
-
-
+      const res = await request.privatePost(QZ_IMG_UPLOAD, params, {
+        headers: { 'Content-type': 'multipart/form-data;charset=utf-8' }
+      })
+      return Promise.resolve(res.data.map(v=>({headImgShortPath:v.headImgShortPath})));
+    }
+    else {
+      return Promise.resolve([]);
+    }
   }
   render() {
     const { textContent, location, tmpImgList, showEmotion } = this.state;
