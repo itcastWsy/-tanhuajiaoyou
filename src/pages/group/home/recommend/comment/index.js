@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ, QZ_DT_PL_TJ } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
@@ -17,7 +17,9 @@ class Index extends Component {
   }
   state = {
     list: [],
-    counts: 0
+    counts: 0,
+    showInput: true,
+    text: ""
   }
   componentDidMount() {
     this.getList();
@@ -41,9 +43,14 @@ class Index extends Component {
     this.getList();
   }
 
+  // 结束输入
+  handleEditingEnd = () => {
+    this.setState({ showInput: false, text: "" });
+  }
+
   render() {
     const item = this.props.route.params;
-    const { list, counts } = this.state;
+    const { list, counts, showInput, text } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="最新评论" />
@@ -107,6 +114,7 @@ class Index extends Component {
             </View>
             <View>
               <THButton
+                onPress={() => this.setState({ showInput: true })}
                 textStyle={{ fontSize: pxToDp(10) }}
                 style={{ width: pxToDp(80), height: pxToDp(20), borderRadius: pxToDp(10) }}
               >发表评论</THButton>
@@ -140,19 +148,26 @@ class Index extends Component {
           </View>
           {/* 2.7 评论列表 结束 */}
           <Modal
-            visible={true}
+            visible={showInput}
             transparent={true}
             animationType="slide"
           >
-            <TouchableOpacity style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", position: "relative" }}>
+            <TouchableOpacity
+              onPress={this.handleEditingEnd}
+              style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", position: "relative" }}>
               <View style={{
-                backgroundColor: "#eee", flexDirection: "row",alignItems:"center",
-                position: "absolute", width: "100%", left: 0, bottom: 0,padding:pxToDp(5)
+                backgroundColor: "#eee", flexDirection: "row", alignItems: "center",
+                position: "absolute", width: "100%", left: 0, bottom: 0, padding: pxToDp(5)
               }} >
-                <TextInput 
-                placeholder="发表评论"
-                style={{ backgroundColor: "#fff", flex: 5 ,borderRadius:pxToDp(18),height:pxToDp(40)}} />
-                <Text style={{ flex: 1 ,textAlign:"center",color:"#666"}} >发送</Text>
+                <TextInput
+                  autoFocus
+                  value={text}
+                  onChangeText={t => this.setState({ text: t })}
+                  placeholder="发表评论"
+                  style={{ backgroundColor: "#fff", flex: 5, borderRadius: pxToDp(18), height: pxToDp(40) }} />
+                <Text
+                  onPress={this.handleSubmit}
+                  style={{ flex: 1, textAlign: "center", color: "#666" }} >发送</Text>
               </View>
 
             </TouchableOpacity>
