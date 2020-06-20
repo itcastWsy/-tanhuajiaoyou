@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ ,QZ_DT_PL_TJ} from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
@@ -46,6 +46,31 @@ class Index extends Component {
   // 结束输入
   handleEditingEnd = () => {
     this.setState({ showInput: false, text: "" });
+  }
+
+  // 完成编辑 发送评论
+  handleSubmit=async()=>{
+    /* 
+    1 获取评论内容 非空判断
+    2 开始构造参数 发送请求 完成 评论
+    3 把 输入框隐藏起来
+    4 重新发送请求 获取评论列表数据
+     */
+    const {text}=this.state;
+    if(!text.trim()){
+      Toast.smile("评论不能为空");
+      return;
+    }
+
+    // tid 动态的id
+    const url=QZ_DT_PL_TJ.replace(":id",this.props.route.params.tid);
+    const res=await request.privatePost(url,{comment:text});
+    this.handleEditingEnd();
+
+    this.params.page=1;
+    this.getList();
+
+    Toast.smile("评论成功");
   }
 
   render() {
@@ -163,10 +188,12 @@ class Index extends Component {
                   autoFocus
                   value={text}
                   onChangeText={t => this.setState({ text: t })}
+                  onSubmitEditing={this.handleSubmit}
                   placeholder="发表评论"
                   style={{ backgroundColor: "#fff", flex: 5, borderRadius: pxToDp(18), height: pxToDp(40) }} />
                 <Text
-                  style={{ flex: 1, textAlign: "center", color: "#666" }} >发送</Text>
+                onPress={this.handleSubmit}
+                  style={{ flex: 1, textAlign: "center", color: "#666" }} >发布</Text>
               </View>
 
             </TouchableOpacity>
