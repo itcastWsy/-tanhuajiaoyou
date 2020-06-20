@@ -25,7 +25,7 @@ class Index extends Component {
     await JMessage.login(res.data.guid,res.data.mobile)
   }
   state = {
-    selectedTab: "group",
+   
     pages: [
       {
         selected: "friend",
@@ -60,6 +60,16 @@ class Index extends Component {
         component: <My />
       }
     ]
+  }
+  constructor(props){
+    super(props);
+    // selectedTab: "group",
+    let selectedTab="friend";
+    if(this.props.route.params&&this.props.route.params.pagename){
+      selectedTab=this.props.route.params.pagename;
+    }
+    this.state.selectedTab=selectedTab;
+
   }
   render() {
     const { selectedTab, pages } = this.state;

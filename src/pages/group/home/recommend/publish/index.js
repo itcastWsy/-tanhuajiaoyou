@@ -131,8 +131,8 @@ class Index extends Component {
     3 将上面的数据 结合 图片 一并提交到后台 完成 动态的发布
     4 返回上一个页面  推荐页面
      */
-    const {textContent,location,longitude,latitude}=this.state;
-    if(!textContent||!location||!longitude||!latitude){
+    const {textContent,location,longitude,latitude,tmpImgList}=this.state;
+    if(!textContent||!location||!longitude||!latitude||!tmpImgList.length){
       Toast.message("输入不合法");
       return ;
     }
@@ -143,7 +143,20 @@ class Index extends Component {
 
     const res=await request.privatePost(QZ_DT_PUBLISH,params);
 
-    console.log(res);
+    // console.log(res);
+    Toast.smile("发布动态成功");
+
+    setTimeout(() => {
+      
+      // navigate 或者 goBack 都错误
+      // 1 tabbar -> friend -> 圈子group -> 发动态  组件内部 生命周期 componentsDidMount
+      // 2 返回上一个页面 => group-推荐  不会触发 componentsDidMount
+      // 3 返回上一个页面 没有办法在推荐页面 看到最新的动态!!
+
+      this.props.navigation.reset({
+        routes:[{name:"Tabbar",params:{pagename:"group"}}]
+      })
+    }, 2000);
 
   }
 
