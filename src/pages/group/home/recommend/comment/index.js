@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, TextInput, Text, Image, TouchableOpacity, Modal } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ, QZ_DT_PL_TJ } from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
@@ -166,7 +166,6 @@ class Index extends Component {
                   placeholder="发表评论"
                   style={{ backgroundColor: "#fff", flex: 5, borderRadius: pxToDp(18), height: pxToDp(40) }} />
                 <Text
-                  onPress={this.handleSubmit}
                   style={{ flex: 1, textAlign: "center", color: "#666" }} >发送</Text>
               </View>
 
