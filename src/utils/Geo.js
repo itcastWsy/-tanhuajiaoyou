@@ -2,6 +2,7 @@
 import { PermissionsAndroid, Platform } from "react-native";
 import { init, Geolocation } from "react-native-amap-geolocation";
 import axios from "axios";
+import Toast from "./Toast";
 class Geo {
   async initGeo() {
     if (Platform.OS === "android") {
@@ -23,11 +24,13 @@ class Geo {
     })
   }
   async getCityByLocation() {
+    Toast.showLoading("努力获取中")
     const { longitude, latitude } = await this.getCurrentPosition();
     const res = await axios.get("https://restapi.amap.com/v3/geocode/regeo", {
       // key  高德地图中第一个应用的key
       params: { location: `${longitude},${latitude}`, key: "83e9dd6dfc3ad5925fc228c14eb3b4d6", }
     });
+    Toast.hideLoading();
     return Promise.resolve(res.data);
   }
 }

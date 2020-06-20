@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import { pxToDp } from "../../../../../utils/stylesKits";
+import IconFont from "../../../../../components/IconFont";
+import Geo from "../../../../../utils/Geo";
 class Index extends Component {
   state = {
     textContent: "",
+    // 经度
     longitude: "",
+    // 纬度
     latitude: "",
+    // 详细地址
     location: "",
     imageContent: [
       {
@@ -29,12 +34,23 @@ class Index extends Component {
   }
 
   // 输入框的值改变事件
-  onChangeText=(textContent)=>{
+  onChangeText = (textContent) => {
     this.setState({ textContent });
   }
 
+  // 获取当前定位
+  getCurrentPosition = async () => {
+    const res = await Geo.getCityByLocation();
+    const { province, city, district, township, streetNumber } = res.regeocode.addressComponent;
+    this.setState({
+      location: province + city + district + township,
+      longitude: streetNumber.location.split(",")[0],
+      latitude: streetNumber.location.split(",")[1]
+    });
+  }
+
   render() {
-    const { textContent } = this.state;
+    const { textContent, location } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="发动态" rightText="发帖"
@@ -54,6 +70,17 @@ class Index extends Component {
           />
         </TouchableOpacity>
         {/* 1.0 输入框 结束 */}
+        {/* 2.0 定位 开始 */}
+        <View style={{ alignItems: "flex-end", height: pxToDp(40), justifyContent: "center" }}>
+          <TouchableOpacity
+            onPress={this.getCurrentPosition}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <IconFont style={{ color: "#666", fontSize: pxToDp(16) }} name="iconlocation" />
+            <Text style={{ fontSize: pxToDp(12), color: "#aaa", marginLeft: pxToDp(5), marginRight: pxToDp(5) }} >{location || "你在哪里?"}</Text>
+          </TouchableOpacity>
+        </View>
+        {/* 2.0 定位 结束 */}
 
       </View>
     );
