@@ -1,9 +1,9 @@
 
 import React, { Component } from 'react';
-import { View, TextInput, Text, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, TextInput, Text, Image, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import IconFont from "../../../../../components/IconFont";
-import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ ,QZ_DT_PL_TJ} from "../../../../../utils/pathMap";
+import { BASE_URI, QZ_DT_PL, QZ_DT_PL_DZ, QZ_DT_PL_TJ } from "../../../../../utils/pathMap";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import date from "../../../../../utils/date";
 import THButton from "../../../../../components/THButton";
@@ -11,10 +11,12 @@ import request from "../../../../../utils/request";
 import Toast from '../../../../../utils/Toast';
 class Index extends Component {
 
-  params = {
+  params = { 
     page: 1,
     pagesize: 5
   }
+  totalPages = 2;
+  isLoading = false;
   state = {
     list: [],
     counts: 0,
@@ -26,11 +28,16 @@ class Index extends Component {
   }
 
   // 获取评论列表
-  getList = async () => {
+  getList = async (isNew = false) => {
     const url = QZ_DT_PL.replace(":id", this.props.route.params.tid);
     const res = await request.privateGet(url, this.params);
-    // console.log(res);
-    this.setState({ list: res.data, counts: res.counts });
+    this.totalPages = res.pages;
+    this.isLoading = false;
+    if (isNew) {
+      this.setState({ list: res.data, counts: res.counts });
+    } else {
+      this.setState({ list: [...this.state.list, ...res.data], counts: res.counts });
+    }
   }
 
   // 给评论点赞
@@ -40,7 +47,7 @@ class Index extends Component {
     console.log(res);
     Toast.smile("点赞成功");
     this.params.page = 1;
-    this.getList();
+    this.getList(true);
   }
 
   // 结束输入
@@ -49,35 +56,51 @@ class Index extends Component {
   }
 
   // 完成编辑 发送评论
-  handleSubmit=async()=>{
+  handleSubmit = async () => {
     /* 
     1 获取评论内容 非空判断
     2 开始构造参数 发送请求 完成 评论
     3 把 输入框隐藏起来
     4 重新发送请求 获取评论列表数据
      */
-    const {text}=this.state;
-    if(!text.trim()){
+    const { text } = this.state;
+    if (!text.trim()) {
       Toast.smile("评论不能为空");
       return;
     }
 
     // tid 动态的id
-    const url=QZ_DT_PL_TJ.replace(":id",this.props.route.params.tid);
-    const res=await request.privatePost(url,{comment:text});
+    const url = QZ_DT_PL_TJ.replace(":id", this.props.route.params.tid);
+    const res = await request.privatePost(url, { comment: text });
     this.handleEditingEnd();
 
-    this.params.page=1;
-    this.getList();
+    this.params.page = 1;
+    this.getList(true);
 
     Toast.smile("评论成功");
   }
 
+  // 滚动分页
+  onScroll = ({ nativeEvent }) => {
+    /* 
+    1 滚动条触底事件 | 还有没有下一页数据 | 节流 
+     */
+
+    const isReachBottom = nativeEvent.contentSize.height - nativeEvent.layoutMeasurement.height - nativeEvent.contentOffset.y < 10;
+    const hasMore = this.params.page < this.totalPages;
+    if (isReachBottom && hasMore && !this.isLoading) {
+      this.isLoading = true;
+      this.params.page++;
+      this.getList();
+    }
+  }
   render() {
     const item = this.props.route.params;
     const { list, counts, showInput, text } = this.state;
     return (
-      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        onScroll={this.onScroll}
+        style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="最新评论" />
         {/* 1.0 用户信息 开始 */}
         <View style={{ padding: pxToDp(10) }}>
@@ -176,6 +199,7 @@ class Index extends Component {
             visible={showInput}
             transparent={true}
             animationType="slide"
+            onRequestClose={this.handleEditingEnd} 
           >
             <TouchableOpacity
               onPress={this.handleEditingEnd}
@@ -192,15 +216,16 @@ class Index extends Component {
                   placeholder="发表评论"
                   style={{ backgroundColor: "#fff", flex: 5, borderRadius: pxToDp(18), height: pxToDp(40) }} />
                 <Text
-                onPress={this.handleSubmit}
-                  style={{ flex: 1, textAlign: "center", color: "#666" }} >发布</Text>
+                  onPress={this.handleSubmit}
+                  style={{ flex: 1, textAlign: "center", color: "#666" }} >发布</Text> 
               </View>
 
             </TouchableOpacity>
           </Modal>
         </View>
         {/* 1.0 用户信息 结束 */}
-      </View>
+        {this.params.page>=this.totalPages?<View style={{height:pxToDp(40),alignItems:"center",justifyContent:"center",backgroundColor:"#ccc"}}><Text>没有更多数据</Text></View>:<></>}
+      </ScrollView>
     );
   }
 }
