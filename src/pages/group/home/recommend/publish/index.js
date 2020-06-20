@@ -4,6 +4,7 @@ import THNav from "../../../../../components/THNav";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import IconFont from "../../../../../components/IconFont";
 import Geo from "../../../../../utils/Geo";
+import ImagePicker from 'react-native-image-picker';
 class Index extends Component {
   state = {
     textContent: "",
@@ -49,6 +50,36 @@ class Index extends Component {
     });
   }
 
+  // 选择图片 拍摄或者选择相册中
+  handleSelectImage = () => {
+
+    const options = {
+      title: 'Select Avatar',
+      customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log("===============");
+      console.log( response);
+      console.log("===============");
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = { uri: response.uri };
+
+      }
+    });
+  }
+
   render() {
     const { textContent, location } = this.state;
     return (
@@ -81,6 +112,21 @@ class Index extends Component {
           </TouchableOpacity>
         </View>
         {/* 2.0 定位 结束 */}
+
+
+        {/* 4.0 工具栏 开始 */}
+        <View style={{ height: pxToDp(50), flexDirection: "row", alignItems: "center", backgroundColor: "#eee" }}>
+          <TouchableOpacity
+            onPress={this.handleSelectImage}
+            style={{ marginLeft: pxToDp(40), marginRight: pxToDp(40) }}
+          >
+            <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="icontupian" />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="iconbiaoqing" />
+          </TouchableOpacity>
+        </View>
+        {/* 4.0 工具栏 结束 */}
 
       </View>
     );
