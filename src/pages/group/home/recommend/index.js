@@ -10,11 +10,12 @@ import JMessage from "../../../../utils/JMessage";
 import { inject, observer } from 'mobx-react';
 import { ActionSheet } from "teaset";
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { NavigationContext  } from "@react-navigation/native";
+import { NavigationContext } from "@react-navigation/native";
+import LinearGradient from "react-native-linear-gradient";
 @inject("UserStore")
 @observer
 class Index extends Component {
-  static contextType=NavigationContext;
+  static contextType = NavigationContext;
   params = {
     page: 1,
     pagesize: 3
@@ -137,9 +138,9 @@ class Index extends Component {
   }
 
   // 跳转到评论页面
-  goComment=(item)=>{
+  goComment = (item) => {
     // this.props.navigation
-    this.context.navigate("Comment",item);
+    this.context.navigate("Comment", item);
   }
   render() {
     const { list, imgUrls, currentIndex, showAlbum } = this.state;
@@ -240,6 +241,20 @@ class Index extends Component {
             onClick={() => this.setState({ showAlbum: false })}
             imageUrls={imgUrls} index={currentIndex} />
         </Modal>
+        <TouchableOpacity
+        style={{position:"absolute",right:"10%",bottom:"10%"}}
+        onPress={()=>this.context.navigate("Publish")}
+        >
+          <LinearGradient
+            colors={["#da6c8b", "#9b65cc"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              width: pxToDp(80), height: pxToDp(80), borderRadius: pxToDp(40),
+              alignItems: "center", justifyContent: "center"
+            }}
+          ><Text style={{ color: "#fff", fontSize: pxToDp(22) }} >发布</Text></LinearGradient>
+        </TouchableOpacity>
       </>
     );
   }
