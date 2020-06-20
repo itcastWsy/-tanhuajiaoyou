@@ -6,6 +6,7 @@ import IconFont from "../../../../../components/IconFont";
 import Geo from "../../../../../utils/Geo";
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../../../../utils/Toast';
+import { ActionSheet } from "teaset";
 class Index extends Component {
   state = {
     textContent: "",
@@ -92,6 +93,21 @@ class Index extends Component {
     });
   }
 
+  // 点击图片 进行删除
+  handleImageRemove = (i) => {
+    const imgDelete = () => {
+      const { tmpImgList } = this.state;
+      tmpImgList.splice(i, 1);
+      this.setState({ tmpImgList });
+      Toast.smile("删除成功");
+    }
+    const opts = [
+      { title: "删除", onPress: imgDelete }
+    ]
+
+    ActionSheet.show(opts, { title: "取消" })
+  }
+
   render() {
     const { textContent, location, tmpImgList } = this.state;
     return (
@@ -128,10 +144,16 @@ class Index extends Component {
         {/* 3.0 相册 开始 */}
         <View style={{ paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
           <ScrollView horizontal>
-            {tmpImgList.map((v, i) => <Image
-              source={{ uri: v.uri }}
-              style={{ marginLeft: pxToDp(5), marginRight: pxToDp(5), width: pxToDp(50), height: pxToDp(50) }}
-            />)}
+            {tmpImgList.map((v, i) => <TouchableOpacity
+              key={i}
+              style={{ marginLeft: pxToDp(5), marginRight: pxToDp(5) }}
+              onPress={this.handleImageRemove.bind(this, i)}
+            >
+              <Image
+                source={{ uri: v.uri }}
+                style={{ width: pxToDp(50), height: pxToDp(50) }}
+              />
+            </TouchableOpacity>)}
           </ScrollView>
         </View>
         {/* 3.0 相册 结束 */}
