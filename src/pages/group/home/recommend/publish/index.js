@@ -7,6 +7,7 @@ import Geo from "../../../../../utils/Geo";
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../../../../utils/Toast';
 import { ActionSheet } from "teaset";
+import Emotion from "../../../../../components/Emotion";
 class Index extends Component {
   state = {
     textContent: "",
@@ -171,6 +172,9 @@ class Index extends Component {
         </View>
         {/* 4.0 工具栏 结束 */}
 
+        {/* 5.0 表情组件 开始 */}
+        <Emotion />
+        {/* 5.0 表情组件 结束 */}
       </View>
     );
   }
