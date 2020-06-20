@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, ScrollView } from 'react-native';
 import THNav from "../../../../../components/THNav";
 import { pxToDp } from "../../../../../utils/stylesKits";
 import IconFont from "../../../../../components/IconFont";
 import Geo from "../../../../../utils/Geo";
 import ImagePicker from 'react-native-image-picker';
+import Toast from '../../../../../utils/Toast';
 class Index extends Component {
   state = {
     textContent: "",
@@ -18,7 +19,9 @@ class Index extends Component {
       {
         "headImgShortPath": "/upload/album/18665711978/1576633170560_0.9746430185850421.jpg"
       }
-    ]
+    ],
+    // 临时图片数组
+    tmpImgList: []
   }
   constructor() {
     super();
@@ -54,8 +57,10 @@ class Index extends Component {
   handleSelectImage = () => {
 
     const options = {
-      title: 'Select Avatar',
-      customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      title: '选择图片',
+      cancelButtonTitle: "取消",
+      takePhotoButtonTitle: "拍照",
+      chooseFromLibraryButtonTitle: "相册",
       storageOptions: {
         skipBackup: true,
         path: 'images',
@@ -64,7 +69,7 @@ class Index extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log("===============");
-      console.log( response);
+      console.log(response);
       console.log("===============");
 
       if (response.didCancel) {
@@ -74,14 +79,21 @@ class Index extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const source = { uri: response.uri };
+        // 图片的数量不能超过9
 
+        const { tmpImgList } = this.state;
+        if (tmpImgList.length >= 9) {
+          Toast.message("图片的数量不能超过9");
+          return;
+        }
+        tmpImgList.push(response);
+        this.setState({ tmpImgList });
       }
     });
   }
 
   render() {
-    const { textContent, location } = this.state;
+    const { textContent, location, tmpImgList } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="发动态" rightText="发帖"
@@ -113,7 +125,16 @@ class Index extends Component {
         </View>
         {/* 2.0 定位 结束 */}
 
-
+        {/* 3.0 相册 开始 */}
+        <View style={{ paddingTop: pxToDp(5), paddingBottom: pxToDp(5) }}>
+          <ScrollView horizontal>
+            {tmpImgList.map((v, i) => <Image
+              source={{ uri: v.uri }}
+              style={{ marginLeft: pxToDp(5), marginRight: pxToDp(5), width: pxToDp(50), height: pxToDp(50) }}
+            />)}
+          </ScrollView>
+        </View>
+        {/* 3.0 相册 结束 */}
         {/* 4.0 工具栏 开始 */}
         <View style={{ height: pxToDp(50), flexDirection: "row", alignItems: "center", backgroundColor: "#eee" }}>
           <TouchableOpacity
