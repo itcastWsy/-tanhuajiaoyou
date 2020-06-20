@@ -10,7 +10,7 @@ class Index extends Component {
       <ScrollView contentContainerStyle={{flexDirection:"row",flexWrap:"wrap"}}>
         {EMOTION_ARR.map((v, i) => <TouchableOpacity
           key={i}
-          style={{}}
+          onPress={()=>this.props.onPress(v)}
         >
           <Image style={{width,height:width}} source={v.value} />
         </TouchableOpacity>)}

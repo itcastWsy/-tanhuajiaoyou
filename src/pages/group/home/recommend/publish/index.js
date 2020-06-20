@@ -23,7 +23,8 @@ class Index extends Component {
       }
     ],
     // 临时图片数组
-    tmpImgList: []
+    tmpImgList: [],
+    showEmotion: false
   }
   constructor() {
     super();
@@ -109,8 +110,16 @@ class Index extends Component {
     ActionSheet.show(opts, { title: "取消" })
   }
 
+  // 选择了表情
+  handleEmotionSelect = (value) => {
+    this.setState({ textContent: this.state.textContent + value.key });
+  }
+  // 切换显示表情组件
+  toggleEmotion = () => {
+    this.setState({ showEmotion: !this.state.showEmotion });
+  }
   render() {
-    const { textContent, location, tmpImgList } = this.state;
+    const { textContent, location, tmpImgList, showEmotion } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <THNav title="发动态" rightText="发帖"
@@ -166,14 +175,16 @@ class Index extends Component {
           >
             <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="icontupian" />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <IconFont style={{ fontSize: pxToDp(30), color: "#666" }} name="iconbiaoqing" />
+          <TouchableOpacity
+            onPress={this.toggleEmotion}
+          >
+            <IconFont style={{ fontSize: pxToDp(30), color: showEmotion?"#df6a88":"#666" }} name="iconbiaoqing" />
           </TouchableOpacity>
         </View>
         {/* 4.0 工具栏 结束 */}
 
         {/* 5.0 表情组件 开始 */}
-        <Emotion />
+        {showEmotion ? <Emotion onPress={this.handleEmotionSelect} /> : <></>}
         {/* 5.0 表情组件 结束 */}
       </View>
     );
