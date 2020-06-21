@@ -9,7 +9,7 @@ import Recommend from "./recommend";
 import Latest from "./latest";
 export default () => {
   return <ScrollableTabView
-    initialPage={0}
+    initialPage={1}
     renderTabBar={() => < CustormerBar/>}
   >
     <Recommend tabLabel='推荐' />
