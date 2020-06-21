@@ -12,6 +12,8 @@ import { ActionSheet } from "teaset";
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { NavigationContext } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
+import Validator from "../../../../utils/validator";
+import { EMOTIONS_DATA } from "../../../../components/Emotion/datasource";
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -30,6 +32,22 @@ class Index extends Component {
   }
   componentDidMount() {
     this.getList();
+  }
+
+
+  // 渲染富文本内容
+  rendeRichText = (text) => {
+    const list = Validator.renderRichText(text);
+    return list.map((v, i) => {
+      if (v.text) {
+        return <Text style={{color:"#666"}} key={i} >{v.text}</Text>
+      } else if (v.image) {
+        return <Image style={{width:pxToDp(25),height:pxToDp(25)}} key={i} source={EMOTIONS_DATA[v.image]} />
+      } else {
+        return <></>;
+      }
+    })
+
   }
 
   // 获取 推荐动态的数据
@@ -188,8 +206,8 @@ class Index extends Component {
             {/* 2.2.1 用户信息 结束 */}
 
             {/* 2.3 动态内容 开始 */}
-            <View style={{ marginTop: pxToDp(8) }}>
-              <Text style={{ color: "#666" }} >{item.content}</Text>
+            <View style={{ marginTop: pxToDp(8),flexDirection:"row",flexWrap:"wrap",alignItems:"center" }}>
+             {this.rendeRichText(item.content)}
             </View>
             {/* 2.3 动态内容 结束 */}
             {/* 2.4 相册 开始 */}
@@ -242,8 +260,8 @@ class Index extends Component {
             imageUrls={imgUrls} index={currentIndex} />
         </Modal>
         <TouchableOpacity
-        style={{position:"absolute",right:"10%",bottom:"10%"}}
-        onPress={()=>this.context.navigate("Publish")}
+          style={{ position: "absolute", right: "10%", bottom: "10%" }}
+          onPress={() => this.context.navigate("Publish")}
         >
           <LinearGradient
             colors={["#da6c8b", "#9b65cc"]}
