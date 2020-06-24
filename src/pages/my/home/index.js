@@ -2,14 +2,46 @@ import React, { Component } from 'react';
 import { View, Image, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { pxToDp } from '../../../utils/stylesKits';
 import IconFont from "../../../components/IconFont";
-import { BASE_URI } from "../../../utils/pathMap";
+import { BASE_URI, MY_COUNTS } from "../../../utils/pathMap";
 import { inject, observer } from 'mobx-react';
 import { ListItem } from "react-native-elements";
+import Geo from "../../../utils/Geo";
+import request from "../../../utils/request";
 @inject("UserStore")
 @observer
 class Index extends Component {
+  // 0: {type: "fanCount", cout: 0}
+  // 1: {type: "loveCount", cout: 0}
+  // 2: {type: "eachLoveCount", cout: 0}
+  state = {
+    city: "",
+    // 粉丝的数量
+    fanCount: 0,
+    // 喜欢的数量
+    loveCount: 0,
+    // 相互关注的数量
+    eachLoveCount: 0
+  }
+  componentDidMount() {
+    this.getCityByLocation();
+    this.getList();
+  }
+  getCityByLocation = async () => {
+    const res = await Geo.getCityByLocation();
+    this.setState({ city: res.regeocode.addressComponent.city });
+  }
+  getList = async () => {
+    const res = await request.privateGet(MY_COUNTS);
+
+    const fanCount = res.data[0].cout;
+    const loveCount = res.data[1].cout;
+    const eachLoveCount = res.data[2].cout;
+    this.setState({ fanCount, loveCount, eachLoveCount });
+  }
+
   render() {
     const user = this.props.UserStore.user;
+    const { city, fanCount, loveCount, eachLoveCount } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#ccc" }}>
         <View style={{ height: pxToDp(150), backgroundColor: "#c7689f", position: "relative" }}>
@@ -39,7 +71,7 @@ class Index extends Component {
               </View>
               <View style={{ flexDirection: "row", alignItems: 'center' }} >
                 <IconFont style={{ color: "#fff" }} name="iconlocation" />
-                <Text style={{ color: "#fff", marginLeft: pxToDp(5) }} >广州</Text>
+                <Text style={{ color: "#fff", marginLeft: pxToDp(5) }} >{city}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -49,45 +81,45 @@ class Index extends Component {
             flexDirection: "row"
           }}>
             <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{eachLoveCount}</Text>
               <Text style={{ color: "#666", fontSize: pxToDp(16) }} >相互关注</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{loveCount}</Text>
               <Text style={{ color: "#666", fontSize: pxToDp(16) }} >喜欢</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{fanCount}</Text>
               <Text style={{ color: "#666", fontSize: pxToDp(16) }} >粉丝</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{marginTop:pxToDp(15)}}>
+          <View style={{ marginTop: pxToDp(15) }}>
             <ListItem
-              leftIcon={<IconFont style={{color:"green",fontSize:pxToDp(20)}} name="icondongtai" />}
+              leftIcon={<IconFont style={{ color: "green", fontSize: pxToDp(20) }} name="icondongtai" />}
               title="我的动态"
-              titleStyle={{color:"#666"}}
+              titleStyle={{ color: "#666" }}
               bottomDivider
               chevron
             />
             <ListItem
-              leftIcon={<IconFont style={{color:"red",fontSize:pxToDp(20)}} name="iconshuikanguowo" />}
+              leftIcon={<IconFont style={{ color: "red", fontSize: pxToDp(20) }} name="iconshuikanguowo" />}
               title="谁看过我"
-              titleStyle={{color:"#666"}}
+              titleStyle={{ color: "#666" }}
               bottomDivider
               chevron
             />
             <ListItem
-              leftIcon={<IconFont style={{color:"purple",fontSize:pxToDp(20)}} name="iconshezhi" />}
+              leftIcon={<IconFont style={{ color: "purple", fontSize: pxToDp(20) }} name="iconshezhi" />}
               title="通用设置"
-              titleStyle={{color:"#666"}} 
+              titleStyle={{ color: "#666" }}
               bottomDivider
-              chevron 
+              chevron
             />
             <ListItem
-              leftIcon={<IconFont style={{color:"blue",fontSize:pxToDp(20)}} name="iconkefu" />}
+              leftIcon={<IconFont style={{ color: "blue", fontSize: pxToDp(20) }} name="iconkefu" />}
               title="客服在线"
-              titleStyle={{color:"#666"}}
+              titleStyle={{ color: "#666" }}
               bottomDivider
               chevron
             />
