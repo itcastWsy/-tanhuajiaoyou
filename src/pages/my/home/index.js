@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Image, Text, StatusBar, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { pxToDp } from '../../../utils/stylesKits';
 import IconFont from "../../../components/IconFont";
 import { BASE_URI, MY_COUNTS } from "../../../utils/pathMap";
@@ -20,7 +20,9 @@ class Index extends Component {
     // 喜欢的数量
     loveCount: 0,
     // 相互关注的数量
-    eachLoveCount: 0
+    eachLoveCount: 0,
+    // 控制 加载中的组件的切换显示
+    refreshing: false
   }
   componentDidMount() {
     this.getCityByLocation();
@@ -37,13 +39,23 @@ class Index extends Component {
     const loveCount = res.data[1].cout;
     const eachLoveCount = res.data[2].cout;
     this.setState({ fanCount, loveCount, eachLoveCount });
+
+    return Promise.resolve();
   }
 
+  // 下拉刷新事件
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.getList(); 
+    this.setState({ refreshing: false });
+  }
   render() {
     const user = this.props.UserStore.user;
-    const { city, fanCount, loveCount, eachLoveCount } = this.state;
+    const { city, fanCount, loveCount, eachLoveCount, refreshing } = this.state;
     return (
-      <View style={{ flex: 1, backgroundColor: "#ccc" }}>
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />}
+        contentContainerStyle={{ flex: 1, backgroundColor: "#ccc" }}>
         <View style={{ height: pxToDp(150), backgroundColor: "#c7689f", position: "relative" }}>
           <StatusBar backgroundColor="transparent" translucent />
           <IconFont name="iconbianji" style={{ position: "absolute", top: pxToDp(30), right: pxToDp(20), color: "#fff", fontSize: pxToDp(16) }} />
@@ -126,7 +138,7 @@ class Index extends Component {
           </View>
 
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
