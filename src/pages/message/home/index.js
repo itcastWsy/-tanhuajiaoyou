@@ -2,7 +2,20 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar, ImageBackground, TouchableOpacity } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import IconFont from "../../../components/IconFont";
+import JMessage from "../../../utils/JMessage";
 class Index extends Component {
+  componentDidMount() {
+    this.getConversations();
+  }
+
+  getConversations = async () => {
+    const res = await JMessage.getConversations();
+    console.log("+++++++++++++++++++++");
+    console.log(res);
+    console.log("+++++++++++++++++++++");
+
+
+  }
   render() {
     return (
       <View>
@@ -24,45 +37,46 @@ class Index extends Component {
           </TouchableOpacity>
         </ImageBackground>
 
-        <View style={{flexDirection:"row",justifyContent:"space-between",
-        paddingTop:pxToDp(10),paddingBottom:pxToDp(10),paddingLeft:pxToDp(30),paddingRight:pxToDp(30),
-        borderBottomWidth:pxToDp(3),borderBottomColor:"#dce2e5"
-      }}>
-          <TouchableOpacity style={{alignItems:"center"}}>
+        <View style={{
+          flexDirection: "row", justifyContent: "space-between",
+          paddingTop: pxToDp(10), paddingBottom: pxToDp(10), paddingLeft: pxToDp(30), paddingRight: pxToDp(30),
+          borderBottomWidth: pxToDp(3), borderBottomColor: "#dce2e5"
+        }}>
+          <TouchableOpacity style={{ alignItems: "center" }}>
             <View style={{
               width: pxToDp(60), height: pxToDp(60), borderRadius: pxToDp(30),
               backgroundColor: "#ebc969", alignItems: 'center', justifyContent: 'center'
             }}>
-              <IconFont style={{color:"#fff",fontSize:pxToDp(24)}} name="icongonggao" />
+              <IconFont style={{ color: "#fff", fontSize: pxToDp(24) }} name="icongonggao" />
             </View>
-            <Text style={{color:"#666"}}>全部</Text>
+            <Text style={{ color: "#666" }}>全部</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{alignItems:"center"}}>
+          <TouchableOpacity style={{ alignItems: "center" }}>
             <View style={{
               width: pxToDp(60), height: pxToDp(60), borderRadius: pxToDp(30),
               backgroundColor: "#ff5314", alignItems: 'center', justifyContent: 'center'
             }}>
-              <IconFont style={{color:"#fff",fontSize:pxToDp(24)}} name="icondianzan-o" />
+              <IconFont style={{ color: "#fff", fontSize: pxToDp(24) }} name="icondianzan-o" />
             </View>
-            <Text style={{color:"#666"}}>点赞</Text>
+            <Text style={{ color: "#666" }}>点赞</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{alignItems:"center"}}>
+          <TouchableOpacity style={{ alignItems: "center" }}>
             <View style={{
               width: pxToDp(60), height: pxToDp(60), borderRadius: pxToDp(30),
               backgroundColor: "#2fb4f9", alignItems: 'center', justifyContent: 'center'
             }}>
-              <IconFont style={{color:"#fff",fontSize:pxToDp(24)}} name="iconpinglun" />
+              <IconFont style={{ color: "#fff", fontSize: pxToDp(24) }} name="iconpinglun" />
             </View>
-            <Text style={{color:"#666"}}>评论</Text>
+            <Text style={{ color: "#666" }}>评论</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{alignItems:"center"}}>
+          <TouchableOpacity style={{ alignItems: "center" }}>
             <View style={{
               width: pxToDp(60), height: pxToDp(60), borderRadius: pxToDp(30),
               backgroundColor: "#1adbde", alignItems: 'center', justifyContent: 'center'
             }}>
-              <IconFont style={{color:"#fff",fontSize:pxToDp(24)}} name="iconxihuan-o" />
+              <IconFont style={{ color: "#fff", fontSize: pxToDp(24) }} name="iconxihuan-o" />
             </View>
-            <Text style={{color:"#666"}}>喜欢</Text>
+            <Text style={{ color: "#666" }}>喜欢</Text>
           </TouchableOpacity>
         </View>
 
