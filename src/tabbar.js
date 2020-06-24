@@ -64,7 +64,7 @@ class Index extends Component {
   constructor(props){
     super(props);
     // selectedTab: "group",
-    let selectedTab="message";
+    let selectedTab="my";
     if(this.props.route.params&&this.props.route.params.pagename){
       selectedTab=this.props.route.params.pagename;
     }
