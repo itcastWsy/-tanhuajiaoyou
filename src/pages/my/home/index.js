@@ -4,6 +4,7 @@ import { pxToDp } from '../../../utils/stylesKits';
 import IconFont from "../../../components/IconFont";
 import { BASE_URI } from "../../../utils/pathMap";
 import { inject, observer } from 'mobx-react';
+import { ListItem } from "react-native-elements";
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -43,22 +44,55 @@ class Index extends Component {
             </View>
           </TouchableOpacity>
 
-          <View style={{ height: pxToDp(120), backgroundColor: "#fff", width: "90%", alignSelf: "center", marginTop: pxToDp(15), borderRadius: pxToDp(8) ,
-          flexDirection:"row"
-        }}>
-            <TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:'center'}} >
-              <Text style={{color:"#666",fontSize:pxToDp(22)}} >1</Text>
-              <Text style={{color:"#666",fontSize:pxToDp(16)}} >相互关注</Text>
+          <View style={{
+            height: pxToDp(120), backgroundColor: "#fff", width: "90%", alignSelf: "center", marginTop: pxToDp(15), borderRadius: pxToDp(8),
+            flexDirection: "row"
+          }}>
+            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >相互关注</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:'center'}} >
-              <Text style={{color:"#666",fontSize:pxToDp(22)}} >1</Text>
-              <Text style={{color:"#666",fontSize:pxToDp(16)}} >喜欢</Text>
+            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >喜欢</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:'center'}} >
-              <Text style={{color:"#666",fontSize:pxToDp(22)}} >1</Text>
-              <Text style={{color:"#666",fontSize:pxToDp(16)}} >粉丝</Text>
+            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >1</Text>
+              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >粉丝</Text>
             </TouchableOpacity>
           </View>
+
+          <View style={{marginTop:pxToDp(15)}}>
+            <ListItem
+              leftIcon={<IconFont style={{color:"green",fontSize:pxToDp(20)}} name="icondongtai" />}
+              title="我的动态"
+              titleStyle={{color:"#666"}}
+              bottomDivider
+              chevron
+            />
+            <ListItem
+              leftIcon={<IconFont style={{color:"red",fontSize:pxToDp(20)}} name="iconshuikanguowo" />}
+              title="谁看过我"
+              titleStyle={{color:"#666"}}
+              bottomDivider
+              chevron
+            />
+            <ListItem
+              leftIcon={<IconFont style={{color:"purple",fontSize:pxToDp(20)}} name="iconshezhi" />}
+              title="通用设置"
+              titleStyle={{color:"#666"}} 
+              bottomDivider
+              chevron 
+            />
+            <ListItem
+              leftIcon={<IconFont style={{color:"blue",fontSize:pxToDp(20)}} name="iconkefu" />}
+              title="客服在线"
+              titleStyle={{color:"#666"}}
+              bottomDivider
+              chevron
+            />
+          </View>
+
         </View>
       </View>
     );
