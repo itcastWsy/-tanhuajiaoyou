@@ -1,22 +1,33 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { pxToDp } from "../../../utils/stylesKits";
 import IconFont from "../../../components/IconFont";
 import JMessage from "../../../utils/JMessage";
+import { FRIENDS_PERSONALINFO_GUID, BASE_URI } from "../../../utils/pathMap";
+import request from "../../../utils/request";
+import date from "../../../utils/date";
 class Index extends Component {
+  state = {
+    list: []
+  }
   componentDidMount() {
     this.getConversations();
   }
 
   getConversations = async () => {
     const res = await JMessage.getConversations();
-    console.log("+++++++++++++++++++++");
-    console.log(res);
-    console.log("+++++++++++++++++++++");
+    if (res.length) {
+      const idArr = res.map(v => v.target.username);
+      const url = FRIENDS_PERSONALINFO_GUID.replace(":ids", idArr.join(","));
+      const users = await request.privateGet(url);
+      this.setState({ list: res.map((v, i) => ({ ...v, user: users.data[i] })) });
+    }
 
 
   }
   render() {
+    const { list } = this.state;
+    console.log(list);
     return (
       <View>
         <StatusBar
@@ -80,6 +91,24 @@ class Index extends Component {
           </TouchableOpacity>
         </View>
 
+
+        <View>
+          {list.map((v, i) => <View
+
+            key={i} style={{ padding: pxToDp(15), flexDirection: "row", borderBottomWidth: pxToDp(1), borderBottomColor: "#ccc" }} >
+            <View><Image
+              source={{ uri: BASE_URI + v.user.header }}
+              style={{ width: pxToDp(54), height: pxToDp(54), borderRadius: pxToDp(27) }} /></View>
+            <View style={{ justifyContent: "space-evenly", paddingLeft: pxToDp(15) }}>
+              <Text style={{ color: "#666" }} >{v.user.nick_name}</Text>
+              <Text style={{ color: "#666" }} >{v.latestMessage.text}</Text>
+            </View>
+            <View style={{ justifyContent: "space-evenly", flex: 1, alignItems: "flex-end" }}>
+              <Text style={{ color: "#666" }} >{date(v.latestMessage.createTime).fromNow()}</Text>
+              <View style={{ width: pxToDp(20), height: pxToDp(20), borderRadius: pxToDp(10), backgroundColor: "red", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#fff" }}>{v.unreadCount}</Text></View>
+            </View>
+          </View>)}
+        </View>
       </View>
     );
   }
