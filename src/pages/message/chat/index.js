@@ -256,6 +256,7 @@ class TestRNIMUI extends Component {
     const message = constructNormalMessage()
     message.msgType = 'text'
     message.text = text
+    message.fromUser.avatarPath = BASE_URI + this.props.UserStore.user.header;
     AuroraIController.appendMessages([message]);
 
     // 极光来实现 发送文本

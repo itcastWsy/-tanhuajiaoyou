@@ -6,7 +6,9 @@ import JMessage from "../../../utils/JMessage";
 import { FRIENDS_PERSONALINFO_GUID, BASE_URI } from "../../../utils/pathMap";
 import request from "../../../utils/request";
 import date from "../../../utils/date";
+import { NavigationContext } from "@react-navigation/native";
 class Index extends Component {
+  static contextType = NavigationContext
   state = {
     list: []
   }
@@ -93,8 +95,8 @@ class Index extends Component {
 
 
         <View>
-          {list.map((v, i) => <View
-
+          {list.map((v, i) => <TouchableOpacity
+            onPress={() => this.context.navigate("Chat", v.user)}
             key={i} style={{ padding: pxToDp(15), flexDirection: "row", borderBottomWidth: pxToDp(1), borderBottomColor: "#ccc" }} >
             <View><Image
               source={{ uri: BASE_URI + v.user.header }}
@@ -107,7 +109,7 @@ class Index extends Component {
               <Text style={{ color: "#666" }} >{date(v.latestMessage.createTime).fromNow()}</Text>
               <View style={{ width: pxToDp(20), height: pxToDp(20), borderRadius: pxToDp(10), backgroundColor: "red", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#fff" }}>{v.unreadCount}</Text></View>
             </View>
-          </View>)}
+          </TouchableOpacity>)}
         </View>
       </View>
     );
