@@ -7,12 +7,14 @@ import { inject, observer } from 'mobx-react';
 import { ListItem } from "react-native-elements";
 import Geo from "../../../utils/Geo";
 import request from "../../../utils/request";
+import { NavigationContext } from "@react-navigation/native";
 @inject("UserStore")
 @observer
 class Index extends Component {
   // 0: {type: "fanCount", cout: 0}
   // 1: {type: "loveCount", cout: 0}
   // 2: {type: "eachLoveCount", cout: 0}
+  static contextType = NavigationContext;
   state = {
     city: "",
     // 粉丝的数量
@@ -46,7 +48,7 @@ class Index extends Component {
   // 下拉刷新事件
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    await this.getList(); 
+    await this.getList();
     this.setState({ refreshing: false });
   }
   render() {
@@ -88,55 +90,62 @@ class Index extends Component {
             </View>
           </TouchableOpacity>
 
-          <View style={{
-            height: pxToDp(120), backgroundColor: "#fff", width: "90%", alignSelf: "center", marginTop: pxToDp(15), borderRadius: pxToDp(8),
-            flexDirection: "row"
-          }}>
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{eachLoveCount}</Text>
-              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >相互关注</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{loveCount}</Text>
-              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >喜欢</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
-              <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{fanCount}</Text>
-              <Text style={{ color: "#666", fontSize: pxToDp(16) }} >粉丝</Text>
-            </TouchableOpacity>
-          </View>
 
-          <View style={{ marginTop: pxToDp(15) }}>
-            <ListItem
-              leftIcon={<IconFont style={{ color: "green", fontSize: pxToDp(20) }} name="icondongtai" />}
-              title="我的动态"
-              titleStyle={{ color: "#666" }}
-              bottomDivider
-              chevron
-            />
-            <ListItem
-              leftIcon={<IconFont style={{ color: "red", fontSize: pxToDp(20) }} name="iconshuikanguowo" />}
-              title="谁看过我"
-              titleStyle={{ color: "#666" }}
-              bottomDivider
-              chevron
-            />
-            <ListItem
-              leftIcon={<IconFont style={{ color: "purple", fontSize: pxToDp(20) }} name="iconshezhi" />}
-              title="通用设置"
-              titleStyle={{ color: "#666" }}
-              bottomDivider
-              chevron
-            />
-            <ListItem
-              leftIcon={<IconFont style={{ color: "blue", fontSize: pxToDp(20) }} name="iconkefu" />}
-              title="客服在线"
-              titleStyle={{ color: "#666" }}
-              bottomDivider
-              chevron
-            />
-          </View>
+        </View>
 
+        <View style={{
+          height: pxToDp(120), backgroundColor: "#fff", width: "90%", alignSelf: "center", marginTop: pxToDp(-15), borderRadius: pxToDp(8),
+          flexDirection: "row"
+        }}>
+          <TouchableOpacity
+            onPress={() => this.context.navigate("Follow", 0)}
+            style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+            <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{eachLoveCount}</Text>
+            <Text style={{ color: "#666", fontSize: pxToDp(16) }} >互相关注</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.context.navigate("Follow", 1)}
+            style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+            <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{loveCount}</Text>
+            <Text style={{ color: "#666", fontSize: pxToDp(16) }} >喜欢</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.context.navigate("Follow", 2)}
+            style={{ flex: 1, alignItems: "center", justifyContent: 'center' }} >
+            <Text style={{ color: "#666", fontSize: pxToDp(22) }} >{fanCount}</Text>
+            <Text style={{ color: "#666", fontSize: pxToDp(16) }} >粉丝</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ marginTop: pxToDp(15) }}>
+          <ListItem
+            leftIcon={<IconFont style={{ color: "green", fontSize: pxToDp(20) }} name="icondongtai" />}
+            title="我的动态"
+            titleStyle={{ color: "#666" }}
+            bottomDivider
+            chevron
+          />
+          <ListItem
+            leftIcon={<IconFont style={{ color: "red", fontSize: pxToDp(20) }} name="iconshuikanguowo" />}
+            title="谁看过我"
+            titleStyle={{ color: "#666" }}
+            bottomDivider
+            chevron
+          />
+          <ListItem
+            leftIcon={<IconFont style={{ color: "purple", fontSize: pxToDp(20) }} name="iconshezhi" />}
+            title="通用设置"
+            titleStyle={{ color: "#666" }}
+            bottomDivider
+            chevron
+          />
+          <ListItem
+            leftIcon={<IconFont style={{ color: "blue", fontSize: pxToDp(20) }} name="iconkefu" />}
+            title="客服在线"
+            titleStyle={{ color: "#666" }}
+            bottomDivider
+            chevron
+          />
         </View>
       </ScrollView>
     );
