@@ -31,7 +31,7 @@ class index extends Component {
   // 获取喜欢相关的数据
   getList = async () => {
     const res = await request.privateGet(MY_LIKELIST);
-    console.log(res);
+
     const likeeachlist = res.data.likeeachlist;
     const ilikelist = res.data.ilikelist;
     const likemelist = res.data.likemelist;
@@ -40,13 +40,14 @@ class index extends Component {
   }
   render() {
     const { likeeachlist, ilikelist, likemelist } = this.state;
+    const index = this.props.route.params || 0;
     return <ScrollableTabView
-      initialPage={1}
+      initialPage={index}
       renderTabBar={() => < CustormerBar />}
     >
-      <FollowEach likeeachlist={likeeachlist} tabLabel='互相关注'></FollowEach>
-      <Ifollow ilikelist={ilikelist} tabLabel='喜欢'></Ifollow>
-      <FollowMe likemelist={likemelist} tabLabel='粉丝'></FollowMe>
+      <FollowEach getList={this.getList} likeeachlist={likeeachlist} tabLabel='互相关注'></FollowEach>
+      <Ifollow getList={this.getList} ilikelist={ilikelist} tabLabel='喜欢'></Ifollow>
+      <FollowMe getList={this.getList} likemelist={likemelist} tabLabel='粉丝'></FollowMe>
 
     </ScrollableTabView>
   }

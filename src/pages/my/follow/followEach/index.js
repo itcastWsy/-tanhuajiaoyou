@@ -3,10 +3,25 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import SearchInput from "../components/SearchInput";
 import { pxToDp } from '../../../../utils/stylesKits';
 import IconFont from "../../../../components/IconFont";
-import { BASE_URI } from "../../../../utils/pathMap";
+import { BASE_URI, FRIENDS_LIKE } from "../../../../utils/pathMap";
+import request from "../../../../utils/request";
+import Toast from '../../../../utils/Toast';
+
 class Index extends Component {
   state = {
     txt: ""
+  }
+
+  // 取消关注-不喜欢
+  setDisLike = async (id) => {
+    // :id :type
+    const url = FRIENDS_LIKE.replace(":id", id).replace(":type", "dislike");
+    const res=await request.privateGet(url);
+
+    Toast.smile("取消关注成功");
+
+    // 刷新数据
+    this.props.getList();
   }
   render() {
     console.log(this.props);
@@ -49,11 +64,13 @@ class Index extends Component {
             </View>
           </View>
           {/* 按钮  */}
-          <TouchableOpacity style={{
-            alignSelf: "center",
-            flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
-            width: pxToDp(80), height: pxToDp(30), borderRadius: pxToDp(3), borderColor: "#ccc", borderWidth: pxToDp(1)
-          }} >
+          <TouchableOpacity
+            onPress={() => this.setDisLike(user.id)}
+            style={{
+              alignSelf: "center",
+              flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
+              width: pxToDp(80), height: pxToDp(30), borderRadius: pxToDp(3), borderColor: "#ccc", borderWidth: pxToDp(1)
+            }} >
             <IconFont style={{ color: "#666" }} name="iconhuxiangguanzhu" />
             <Text style={{ color: "#666" }}>取消关注</Text>
           </TouchableOpacity>

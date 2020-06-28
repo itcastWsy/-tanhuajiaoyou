@@ -3,11 +3,26 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import SearchInput from "../components/SearchInput";
 import { pxToDp } from '../../../../utils/stylesKits';
 import IconFont from "../../../../components/IconFont";
-import { BASE_URI } from "../../../../utils/pathMap";
+import { BASE_URI, FRIENDS_LIKE } from "../../../../utils/pathMap";
+import request from "../../../../utils/request";
+import Toast from '../../../../utils/Toast';
 class Index extends Component {
   state = {
     txt: ""
   }
+
+  // 点击了关注-设置了喜欢
+  setLike = async (id) => {
+    // :id :type
+    const url = FRIENDS_LIKE.replace(":id", id).replace(":type", "like");
+    const res = await request.privateGet(url);
+
+    Toast.smile("关注成功");
+
+    // 刷新数据
+    this.props.getList();
+  }
+
   render() {
     console.log(this.props);
     const { txt } = this.state;
@@ -49,11 +64,13 @@ class Index extends Component {
             </View>
           </View>
           {/* 按钮  */}
-          <TouchableOpacity style={{
-            alignSelf: "center",
-            flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
-            width: pxToDp(80), height: pxToDp(30), borderRadius: pxToDp(3), borderColor: "orange", borderWidth: pxToDp(1)
-          }} >
+          <TouchableOpacity
+            onPress={() => this.setLike(user.id)}
+            style={{
+              alignSelf: "center",
+              flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
+              width: pxToDp(80), height: pxToDp(30), borderRadius: pxToDp(3), borderColor: "orange", borderWidth: pxToDp(1)
+            }} >
             <IconFont style={{ color: "orange" }} name="iconjia" />
             <Text style={{ color: "orange" }}>关注</Text>
           </TouchableOpacity>
