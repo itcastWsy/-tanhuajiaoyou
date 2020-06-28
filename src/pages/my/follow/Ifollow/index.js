@@ -10,19 +10,21 @@ class Index extends Component {
   }
   render() {
     console.log(this.props);
+    const { txt } = this.state;
     const { ilikelist } = this.props;
+    // 筛选后的数组
+    const list = ilikelist.filter(v => v.nick_name.includes(txt));
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
-       <View style={{backgroundColor:"#eee",padding:pxToDp(10)}} >
-       <SearchInput onChangeText={txt => this.setState({ txt })} value={this.state.txt} style={{ marginTop: pxToDp(10) }} />
-       </View>
-
-        {ilikelist.map((user, i) => <View
+        <View style={{ backgroundColor: "#eee", padding: pxToDp(10) }} >
+          <SearchInput onChangeText={txt => this.setState({ txt })} value={this.state.txt} style={{ marginTop: pxToDp(10) }} />
+        </View>
+        {list.map((user, i) => <View
           key={i}
           style={{
             flexDirection: "row", paddingTop: pxToDp(15),
-            paddingBottom: pxToDp(15), paddingRight:pxToDp(15),
-            borderBottomColor:"#ccc",borderBottomWidth:pxToDp(1)
+            paddingBottom: pxToDp(15), paddingRight: pxToDp(15),
+            borderBottomColor: "#ccc", borderBottomWidth: pxToDp(1)
           }} >
           {/* 图片 */}
           <View style={{ paddingLeft: pxToDp(15), paddingRight: pxToDp(15) }}>
@@ -48,12 +50,12 @@ class Index extends Component {
           </View>
           {/* 按钮  */}
           <TouchableOpacity style={{
-            alignSelf:"center",
-            flexDirection: "row", justifyContent: "space-evenly",alignItems:"center",
+            alignSelf: "center",
+            flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
             width: pxToDp(80), height: pxToDp(30), borderRadius: pxToDp(3), borderColor: "#ccc", borderWidth: pxToDp(1)
           }} >
-            <IconFont style={{color:"#666"}} name="iconjia" />
-            <Text style={{color:"#666"}}>已关注</Text>
+            <IconFont style={{ color: "#666" }} name="iconjia" />
+            <Text style={{ color: "#666" }}>已关注</Text>
           </TouchableOpacity>
         </View>)}
       </View>
