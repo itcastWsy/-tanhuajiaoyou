@@ -14,7 +14,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { Overlay } from "teaset";
 import { inject, observer } from "mobx-react";
 import request from '../../../utils/request';
-import { ACCOUNT_CHECKHEADIMAGE ,ACCOUNT_REGINFO} from '../../../utils/pathMap';
+import { ACCOUNT_CHECKHEADIMAGE, ACCOUNT_REGINFO } from '../../../utils/pathMap';
 import JMessage from "../../../utils/JMessage";
 @inject("RootStore")
 @observer
@@ -43,9 +43,9 @@ class Index extends Component {
     console.log(res);
     const address = res.regeocode.formatted_address;
     const city = res.regeocode.addressComponent.city.replace("市", "");
-    const lng=res.regeocode.addressComponent.streetNumber.location.split(",")[0];
-    const lat=res.regeocode.addressComponent.streetNumber.location.split(",")[1];
-    this.setState({ address, city,lng,lat });
+    const lng = res.regeocode.addressComponent.streetNumber.location.split(",")[0];
+    const lat = res.regeocode.addressComponent.streetNumber.location.split(",")[1];
+    this.setState({ address, city, lng, lat });
 
   }
   // 选择性别
@@ -103,7 +103,7 @@ class Index extends Component {
     });
 
 
-    let overlayViewRef=null;
+    let overlayViewRef = null;
 
     // 显示审核中 效果
     let overlayView = (
@@ -139,35 +139,38 @@ class Index extends Component {
     // 是否上传头像成功
     if (res0.code !== "10000") {
       // 失败
-      return ;
+      return;
     }
 
     // 构造参数 完善个人信息
     // state
-    let params=this.state;
-    params.header=res0.data.headImgPath;
+    let params = this.state;
+    params.header = res0.data.headImgPath;
     console.log(params);
 
-    const res1=await request.privatePost(ACCOUNT_REGINFO,params);
+    const res1 = await request.privatePost(ACCOUNT_REGINFO, params);
     // console.log(res1);
-    if(res1.code!=="10000"){
+    if (res1.code !== "10000") {
       // 完善信息失败
       console.log(res1);
       return;
     }
 
     // 注册极光  用户名 this.props.RootStore.userId 密码:默认 用户的手机号码
-    const res2=await this.jgBusiness(this.props.RootStore.userId,this.props.RootStore.mobile);
+    const res2 = await this.jgBusiness(this.props.RootStore.userId, this.props.RootStore.mobile);
     // console.log(res2);
 
     // 做什么 ??
     // 1 关闭 审核的浮层
     overlayViewRef.close();
     // 2 给出用户一个提示
-    Toast.smile("恭喜 操作成功",2000,"center");
+    Toast.smile("恭喜 操作成功", 2000, "center");
     // 3 跳转页面 交友页面  在登录页面 用户的判断 新旧用户的判断
     setTimeout(() => {
-      this.props.navigation.navigate("Tabbar");
+      // this.props.navigation.navigate("Tabbar");
+      this.props.navigation.reset({
+        routes: [{ name: "Tabbar" }]
+      })
     }, 2000);
 
   }
@@ -194,9 +197,9 @@ class Index extends Component {
   }
 
   // 执行极光注册
-  jgBusiness=(username,password)=>{
+  jgBusiness = (username, password) => {
     // 在 App 里面 进行极光的初始化
-    return JMessage.register(username,password);
+    return JMessage.register(username, password);
   }
 
   render() {

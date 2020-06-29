@@ -88,7 +88,11 @@ export default {
         resolve(res);
       }, reject);
     })
-  }
+  },
+  /**
+   * 执行极光的退出
+   */
+  logout: JMessage.logout
 
 
 

@@ -129,9 +129,12 @@ class Index extends Component {
      if(res.data.isNew){
       //  新用户 UserInfo
       this.props.navigation.navigate("UserInfo");
+ 
      }else{
       //  老用户
-      this.props.navigation.navigate("Tabbar");
+      this.props.navigation.reset({
+        routes:[{name:"Tabbar"}]
+      })
      }
   }
 

@@ -11,10 +11,16 @@ class RootStore {
   // @observable userId = "159159123461591515495983";
   @observable userId = "";
 
-  @action setUserInfo(mobile,token,userId) {
+  @action setUserInfo(mobile, token, userId) {
     this.mobile = mobile;
     this.token = token;
     this.userId = userId;
+  }
+  // 清除信息
+  @action clearUserInfo() {
+    this.mobile = "";
+    this.token = "";
+    this.userId = "";
   }
 }
 
