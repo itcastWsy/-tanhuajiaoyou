@@ -1,19 +1,23 @@
 import date from "../../../utils/date";
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TextInput } from 'react-native';
 import THNav from "../../../components/THNav";
 import { inject, observer } from 'mobx-react';
 import { ListItem } from "react-native-elements";
 import { pxToDp } from '../../../utils/stylesKits';
-import { BASE_URI, ACCOUNT_CHECKHEADIMAGE, MY_SUBMITUSERINFO,MY_INFO } from '../../../utils/pathMap';
+import { BASE_URI, ACCOUNT_CHECKHEADIMAGE, MY_SUBMITUSERINFO, MY_INFO } from '../../../utils/pathMap';
 import ImagePicker from 'react-native-image-crop-picker';
 import request from "../../../utils/request";
 import Toast from "../../../utils/Toast";
+import { Overlay } from "react-native-elements";
 @inject("UserStore")
 @observer
 class Index extends Component {
 
-
+  state = {
+    // 是否显示 昵称输入框
+    showNickName: false
+  }
   // 选择头像
   onPickerImage = async () => {
     // 1   获取到 选中后的图片
@@ -39,7 +43,7 @@ class Index extends Component {
     // 1 给用户友好的提示
     Toast.smile("修改成功");
     // 2 刷新数据 
-    const res2=await request.privateGet(MY_INFO);
+    const res2 = await request.privateGet(MY_INFO);
     this.props.UserStore.setUser(res2.data);
     return Promise.resolve(res);
 
@@ -66,11 +70,29 @@ class Index extends Component {
       }
     })
   }
+  // 编辑昵称
+  nickNameUpdate = async (e) => {
+    // 1 获取到输入框的文本 (1 state中声明txt变量 绑定在输入框的value值和 onChangeText )
+    // 2 非受控表单的方式 
+
+    const nickname = e.nativeEvent.text;
+    if (!nickname) return;
+
+    await this.onSubmitUser({ nickname });
+    this.setState({ showNickName: false });
+
+  }
   render() {
     const user = this.props.UserStore.user;
-    console.log(user);
+    const { showNickName } = this.state;
     return (
       <View>
+        <Overlay visible={showNickName} onBackdropPress={() => this.setState({ showNickName: false })}  >
+          <TextInput placeholder="修改昵称"
+            onSubmitEditing={this.nickNameUpdate}
+            style={{ width: pxToDp(200) }}
+          />
+        </Overlay>
         <THNav title="编辑资料" />
         {/* 用户信息 */}
         <ListItem
@@ -89,6 +111,7 @@ class Index extends Component {
           rightTitle={user.nick_name}
           chevron
           bottomDivider
+          onPress={() => this.setState({ showNickName: true })}
         />
         <ListItem
           title="生日"
