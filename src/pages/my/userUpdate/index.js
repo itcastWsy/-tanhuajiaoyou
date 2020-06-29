@@ -1,3 +1,4 @@
+import DatePicker from "react-native-datepicker";
 import date from "../../../utils/date";
 import React, { Component } from 'react';
 import { View, Text, Image, TextInput } from 'react-native';
@@ -82,11 +83,17 @@ class Index extends Component {
     this.setState({ showNickName: false });
 
   }
+  // 编辑生日
+  birthdayUpdate=async(birthday)=>{
+    // console.log(birthday);
+    this.onSubmitUser({birthday});
+  }
   render() {
     const user = this.props.UserStore.user;
     const { showNickName } = this.state;
     return (
       <View>
+
         <Overlay visible={showNickName} onBackdropPress={() => this.setState({ showNickName: false })}  >
           <TextInput placeholder="修改昵称"
             onSubmitEditing={this.nickNameUpdate}
@@ -113,13 +120,28 @@ class Index extends Component {
           bottomDivider
           onPress={() => this.setState({ showNickName: true })}
         />
-        <ListItem
-          title="生日"
-          titleStyle={{ color: "#666" }}
-          rightTitle={date(user.birthday).format("YYYY-MM-DD")}
-          chevron
-          bottomDivider
-        />
+        <View style={{position:"relative"}}>
+          <ListItem
+            title="生日"
+            titleStyle={{ color: "#666" }}
+            rightTitle={date(user.birthday).format("YYYY-MM-DD")}
+            chevron
+            bottomDivider
+          />
+          <DatePicker
+            androidMode="spinner"
+            style={{ width: "100%",position:"absolute",top:0,left:0,height:"100%",opacity:0 }}
+            date={date(user.birthday).format("YYYY-MM-DD")}
+            mode="date"
+            placeholder="设置生日"
+            format="YYYY-MM-DD"
+            minDate="1900-01-01"
+            maxDate={date(new Date()).format("YYYY-MM-DD")}
+            confirmBtnText="确定"
+            cancelBtnText="取消"
+            onDateChange={this.birthdayUpdate}
+          />
+        </View>
         <ListItem
           title="性别"
           titleStyle={{ color: "#666" }}
