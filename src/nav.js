@@ -17,6 +17,7 @@ import Comment from "./pages/group/home/recommend/comment";
 import Publish from "./pages/group/home/recommend/publish";
 import Follow from "./pages/my/follow";
 import Trends from "./pages/my/trends";
+import Visitors from "./pages/my/visitors";
 
 import {inject,observer  } from "mobx-react";
 const Stack = createStackNavigator();
@@ -27,7 +28,7 @@ class Nav extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      initialRouteName:this.props.RootStore.token?"Trends":"Login"
+      initialRouteName:this.props.RootStore.token?"Visitors":"Login"
     }
   }
   render() { 
@@ -35,6 +36,7 @@ class Nav extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+          <Stack.Screen name="Visitors" component={Visitors} />
           <Stack.Screen name="Trends" component={Trends} />
           <Stack.Screen name="Follow" component={Follow} />
           <Stack.Screen name="Publish" component={Publish} />
