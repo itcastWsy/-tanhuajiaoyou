@@ -1,3 +1,5 @@
+import CityJson from "../../../res/citys.json";
+import Picker from 'react-native-picker';
 import DatePicker from "react-native-datepicker";
 import date from "../../../utils/date";
 import React, { Component } from 'react';
@@ -95,6 +97,27 @@ class Index extends Component {
     await this.onSubmitUser({ gender });
     this.setState({ showGender: false });
   }
+  // 显示城市选择组件
+  showCityPicker = async () => {
+    Picker.init({
+      //  pickerData 要显示哪些数据 全国城市数据?
+      pickerData: CityJson,
+      // 默认选择哪个数据
+      // selectedValue: ["河北", "唐山"],
+      selectedValue: ["北京", "北京"],
+      wheelFlex: [1, 1, 0], // 显示省和市
+      pickerConfirmBtnText: "确定",
+      pickerCancelBtnText: "取消",
+      pickerTitleText: "选择城市",
+      onPickerConfirm: this.cityUpdate
+    });
+    Picker.show();
+  }
+  // 编辑城市
+  cityUpdate = async (arr) => {
+    const city=arr[1];
+    await this.onSubmitUser({ city });
+  }
   render() {
     const user = this.props.UserStore.user;
     const { showNickName, showGender } = this.state;
@@ -169,6 +192,7 @@ class Index extends Component {
           rightTitle={user.city}
           chevron
           bottomDivider
+          onPress={this.showCityPicker}
         />
         <ListItem
           title="学历"
