@@ -140,6 +140,7 @@ class Index extends Component {
             titleStyle={{ color: "#666" }}
             bottomDivider
             chevron
+            onPress={() => this.context.navigate("Settings")}
           />
           <ListItem
             leftIcon={<IconFont style={{ color: "blue", fontSize: pxToDp(20) }} name="iconkefu" />}

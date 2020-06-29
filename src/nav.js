@@ -19,6 +19,7 @@ import Follow from "./pages/my/follow";
 import Trends from "./pages/my/trends";
 import Visitors from "./pages/my/visitors";
 import UserUpdate from "./pages/my/userUpdate";
+import Settings from "./pages/my/settings";
 
 
 import {inject,observer  } from "mobx-react";
@@ -38,6 +39,7 @@ class Nav extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+          <Stack.Screen name="Settings" component={Settings} />
           <Stack.Screen name="UserUpdate" component={UserUpdate} />
           <Stack.Screen name="Visitors" component={Visitors} />
           <Stack.Screen name="Trends" component={Trends} />
