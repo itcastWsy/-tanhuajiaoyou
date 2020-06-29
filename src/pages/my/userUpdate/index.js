@@ -137,6 +137,27 @@ class Index extends Component {
     const xueli=arr[0];
     this.onSubmitUser({xueli});
   }
+
+  // 显示婚姻选择框
+  showMarryPicker=async()=>{
+    Picker.init({
+      pickerData: ["单身","已婚"],
+      selectedValue: ["单身"],
+      wheelFlex: [1, 0, 0], // 显示省和市
+      pickerConfirmBtnText: "确定",
+      pickerCancelBtnText: "取消",
+      pickerTitleText: "选择婚姻状态",
+      onPickerConfirm: this.marryUpdate 
+    });
+    Picker.show();
+  }
+
+  // 编辑婚姻状态
+  marryUpdate=async(arr)=>{
+    const marry=arr[0];
+    await this.onSubmitUser({marry});
+  }
+
   render() {
     const user = this.props.UserStore.user;
     const { showNickName, showGender } = this.state;
@@ -241,6 +262,7 @@ class Index extends Component {
           rightTitle={user.marry}
           chevron
           bottomDivider
+          onPress={this.showMarryPicker}
         />
       </View>
     );
