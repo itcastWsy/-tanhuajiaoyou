@@ -17,7 +17,9 @@ class Index extends Component {
 
   state = {
     // 是否显示 昵称输入框
-    showNickName: false
+    showNickName: false,
+    // 是否显示 性别选择框
+    showGender: false
   }
   // 选择头像
   onPickerImage = async () => {
@@ -84,13 +86,18 @@ class Index extends Component {
 
   }
   // 编辑生日
-  birthdayUpdate=async(birthday)=>{
+  birthdayUpdate = async (birthday) => {
     // console.log(birthday);
-    this.onSubmitUser({birthday});
+    this.onSubmitUser({ birthday });
+  }
+  // 编辑性别
+  genderUpdate = async (gender) => {
+    await this.onSubmitUser({ gender });
+    this.setState({ showGender: false });
   }
   render() {
     const user = this.props.UserStore.user;
-    const { showNickName } = this.state;
+    const { showNickName, showGender } = this.state;
     return (
       <View>
 
@@ -99,6 +106,12 @@ class Index extends Component {
             onSubmitEditing={this.nickNameUpdate}
             style={{ width: pxToDp(200) }}
           />
+        </Overlay>
+        <Overlay visible={showGender} onBackdropPress={() => this.setState({ showGender: false })}>
+          <View style={{ width: pxToDp(200), height: pxToDp(60), justifyContent: "space-evenly" }}>
+            <Text style={{ color: "#666" }} onPress={() => this.genderUpdate("男")}  >男</Text>
+            <Text style={{ color: "#666" }} onPress={() => this.genderUpdate("女")}  >女</Text>
+          </View>
         </Overlay>
         <THNav title="编辑资料" />
         {/* 用户信息 */}
@@ -120,7 +133,7 @@ class Index extends Component {
           bottomDivider
           onPress={() => this.setState({ showNickName: true })}
         />
-        <View style={{position:"relative"}}>
+        <View style={{ position: "relative" }}>
           <ListItem
             title="生日"
             titleStyle={{ color: "#666" }}
@@ -130,7 +143,7 @@ class Index extends Component {
           />
           <DatePicker
             androidMode="spinner"
-            style={{ width: "100%",position:"absolute",top:0,left:0,height:"100%",opacity:0 }}
+            style={{ width: "100%", position: "absolute", top: 0, left: 0, height: "100%", opacity: 0 }}
             date={date(user.birthday).format("YYYY-MM-DD")}
             mode="date"
             placeholder="设置生日"
@@ -148,6 +161,7 @@ class Index extends Component {
           rightTitle={user.gender}
           chevron
           bottomDivider
+          onPress={() => this.setState({ showGender: true })}
         />
         <ListItem
           title="现居城市"
