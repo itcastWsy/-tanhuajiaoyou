@@ -115,8 +115,27 @@ class Index extends Component {
   }
   // 编辑城市
   cityUpdate = async (arr) => {
-    const city=arr[1];
+    const city = arr[1];
     await this.onSubmitUser({ city });
+  }
+
+  // 显示学历选择框
+  showXueLiPicker = async () => {
+    Picker.init({
+      pickerData: ["博士后", "博士", "硕士", "本科", "大专", "高中", "留学", "其他"],
+      selectedValue: ["其他"],
+      wheelFlex: [1, 0, 0], // 显示省和市
+      pickerConfirmBtnText: "确定",
+      pickerCancelBtnText: "取消",
+      pickerTitleText: "选择学历",
+      onPickerConfirm: this.xueliUpdate
+    });
+    Picker.show();
+  }
+  // 编辑学历
+  xueliUpdate = async (arr) => {
+    const xueli=arr[0];
+    this.onSubmitUser({xueli});
   }
   render() {
     const user = this.props.UserStore.user;
@@ -200,6 +219,7 @@ class Index extends Component {
           rightTitle={user.xueli}
           chevron
           bottomDivider
+          onPress={this.showXueLiPicker}
         />
         <ListItem
           title="月收入"
