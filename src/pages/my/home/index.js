@@ -60,7 +60,7 @@ class Index extends Component {
         contentContainerStyle={{ flex: 1, backgroundColor: "#ccc" }}>
         <View style={{ height: pxToDp(150), backgroundColor: "#c7689f", position: "relative" }}>
           <StatusBar backgroundColor="transparent" translucent />
-          <IconFont name="iconbianji" style={{ position: "absolute", top: pxToDp(30), right: pxToDp(20), color: "#fff", fontSize: pxToDp(16) }} />
+          <IconFont onPress={() => this.context.navigate("UserUpdate")} name="iconbianji" style={{ position: "absolute", top: pxToDp(30), right: pxToDp(20), color: "#fff", fontSize: pxToDp(16) }} />
           <TouchableOpacity
             style={{
               flexDirection: "row", paddingTop: pxToDp(15),
