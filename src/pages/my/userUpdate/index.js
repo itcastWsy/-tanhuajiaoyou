@@ -5,9 +5,10 @@ import THNav from "../../../components/THNav";
 import { inject, observer } from 'mobx-react';
 import { ListItem } from "react-native-elements";
 import { pxToDp } from '../../../utils/stylesKits';
-import { BASE_URI, ACCOUNT_CHECKHEADIMAGE, MY_SUBMITUSERINFO } from '../../../utils/pathMap';
+import { BASE_URI, ACCOUNT_CHECKHEADIMAGE, MY_SUBMITUSERINFO,MY_INFO } from '../../../utils/pathMap';
 import ImagePicker from 'react-native-image-crop-picker';
 import request from "../../../utils/request";
+import Toast from "../../../utils/Toast";
 @inject("UserStore")
 @observer
 class Index extends Component {
@@ -35,6 +36,11 @@ class Index extends Component {
   // user={header} ={nickname}
   onSubmitUser = async (user) => {
     const res = await request.privatePost(MY_SUBMITUSERINFO, user);
+    // 1 给用户友好的提示
+    Toast.smile("修改成功");
+    // 2 刷新数据 
+    const res2=await request.privateGet(MY_INFO);
+    this.props.UserStore.setUser(res2.data);
     return Promise.resolve(res);
 
   }
